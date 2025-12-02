@@ -79,17 +79,35 @@ def add_user():
 @app.route("/api/user/show", methods=["POST"])
 def see_user():
     query = request.get_json()
-    try:
-        query["_id"] = ObjectId(query.get("emailOrId"))
-    except:
-        query["email"] = query.get("emailOrId")
+    value = query.get("emailOrId")
+    
+    if not value:
+        return jsonify({"error": "Falta el campo emailOrId"}), 400
 
-    user = users_collection.find_one(query)
+    user = None
+
+    # Buscar por ID
+    try:
+        obj_id = ObjectId(value)
+        user = users_collection.find_one({"_id": obj_id})
+    except:
+        pass
+
+    # Buscar por email
+    if not user:
+        user = users_collection.find_one({"email": value})
+
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
-    user["_id"] = str(user["_id"])  # Convierte ObjectId a string para JSON
-    return jsonify(user)
+    # Convertir ObjectId
+    user["_id"] = str(user["_id"])
+
+    # ELIMINAR password (bytes) antes de responder
+    if "password" in user:
+        del user["password"]
+
+    return jsonify(user), 200
 
 # UPDATE
 @app.route("/api/user/update/<user_id>", methods=["PATCH"])
