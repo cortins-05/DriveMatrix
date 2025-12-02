@@ -1,0 +1,766 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>DriveMatrix API v1 – Documentación para Developers</title>
+<link rel="favicon" href="documentacion.png" type="image/x-icon">	
+<style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2bd98dbf-b003-808d-9fdb-cb4fa7e6eac4" class="page sans"><header><h1 class="page-title" dir="auto">DriveMatrix API v1 – Documentación para Developers</h1><p class="page-description" dir="auto"></p><table class="properties"><tbody><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>Creado</th><td><time>@2 de diciembre de 2025 14:14</time></td></tr></tbody></table></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="2bd98dbf-b003-80fa-98dd-ead975b9b1c4" class=""><strong>Formato de datos:</strong></h1></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-800c-ad18-c6e09294d9c5" class="">Todos los endpoints usan JSON para <strong>request</strong> y <strong>response</strong>.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-806b-a766-d3ef689c8208" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">Content-Type: application/json
+
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-8099-a09f-f31b2bee9be8"/></div><div style="display:contents" dir="auto"><h2 id="2bd98dbf-b003-8071-b6f3-c347451c3207" class="">1. Descripción General</h2></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-80f0-956e-eb84f2747041" class="">DriveMatrix API permite gestionar usuarios de la aplicación, incluyendo creación, consulta, actualización y eliminación. La API usa MongoDB como backend y Flask para el servidor.</p></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-80e6-8a6e-c51e25215009" class="bulleted-list"><li style="list-style-type:disc"><strong>Autenticación:</strong> Ninguna por ahora (future: JWT).</li></ul></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-80d5-9175-c300e8d6ceea" class="bulleted-list"><li style="list-style-type:disc"><strong>Passwords:</strong> Almacenadas con hash seguro (<code>bcrypt</code>).</li></ul></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-8097-a3fc-c4214a037139" class="bulleted-list"><li style="list-style-type:disc"><strong>Tipo de API:</strong> RESTful, basada en recursos <code>/user</code>.</li></ul></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-8033-b2cd-cbf3cd67b43c"/></div><div style="display:contents" dir="auto"><h2 id="2bd98dbf-b003-804b-9aac-f7aa209ba2c6" class="">2. Endpoints de Usuarios</h2></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-80dc-8cbd-d986616f9070" class="">2.1 Crear Usuario</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-8044-a371-c57244094c10" class=""><strong>POST</strong> <code>/user/create</code></p></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-806f-a36a-f51659188b6c" class="">Crea un nuevo usuario en la base de datos.</p></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8086-bbd7-db40619d391b" class="">Parámetros JSON</h3></div><div style="display:contents" dir="ltr"><table id="2bd98dbf-b003-8061-9e73-e179d6a67a3a" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-803f-b2cf-f45e284a0e2a"><th id="hE;L" class="simple-table-header-color simple-table-header">Campo</th><th id="&lt;;|C" class="simple-table-header-color simple-table-header">Tipo</th><th id="yr&gt;S" class="simple-table-header-color simple-table-header">Obligatorio</th><th id="gKcZ" class="simple-table-header-color simple-table-header">Descripción</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-80c5-bc85-e26cf13b29a0"><td id="hE;L" class="">nombre</td><td id="&lt;;|C" class="">string</td><td id="yr&gt;S" class="">Sí</td><td id="gKcZ" class="">Nombre completo del usuario</td></tr></div><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-8083-a4e9-cb1fcf2cb89b"><td id="hE;L" class="">email</td><td id="&lt;;|C" class="">string</td><td id="yr&gt;S" class="">Sí</td><td id="gKcZ" class="">Email único del usuario</td></tr></div><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-804d-b3af-fa205d2b7997"><td id="hE;L" class="">password</td><td id="&lt;;|C" class="">string</td><td id="yr&gt;S" class="">Sí</td><td id="gKcZ" class="">Contraseña (será hasheada internamente)</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8084-adfa-f378e757c2b2" class="">Ejemplo de Request</h3></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8064-b81f-dad4e89f5e04" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;nombre&quot;: &quot;Lucas&quot;,
+  &quot;email&quot;: &quot;lucas@example.com&quot;,
+  &quot;password&quot;: &quot;MiPassword123&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8098-b398-c5147351732d" class="">Ejemplo de Response</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-808d-862c-e8f02fd1f38d" class=""><strong>201 Created</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-80d8-9b55-f5840efa06d9" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;message&quot;: &quot;Usuario creado&quot;,
+  &quot;user_id&quot;: &quot;6510c5d5f5a3e3e5d2b9e1c3&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8046-9475-f486eb75ee9c" class="">Errores comunes</h3></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-8091-9a53-d5397f712d0c" class="bulleted-list"><li style="list-style-type:disc"><strong>400 Bad Request:</strong> Si faltan campos obligatorios.</li></ul></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-809e-96b2-d3cff8c01559" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;error&quot;: &quot;nombre, email y contraseña son requeridos&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-802e-a036-df1f6c558258"/></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8094-ada1-c6d5c677228a" class="">2.2 Consultar Usuario</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-80ea-b607-c6d9ac733ea0" class=""><strong>POST</strong> <code>/user/show</code></p></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-8058-b77f-d9c662740ac3" class="">Busca un usuario por email o Mongo ObjectId.</p></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-807a-93d1-cf529d8f6bf1" class="">Parámetros JSON</h3></div><div style="display:contents" dir="ltr"><table id="2bd98dbf-b003-80d7-8d11-ce4fa73937d9" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-8092-89c9-dafdfb0bfd42"><th id="&lt;AE{" class="simple-table-header-color simple-table-header">Campo</th><th id="Dy&lt;q" class="simple-table-header-color simple-table-header">Tipo</th><th id="brl}" class="simple-table-header-color simple-table-header">Obligatorio</th><th id="mqtE" class="simple-table-header-color simple-table-header">Descripción</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-80db-b758-f8736b7b88b6"><td id="&lt;AE{" class="">emailOrId</td><td id="Dy&lt;q" class="">string</td><td id="brl}" class="">Sí</td><td id="mqtE" class="">Email o <code>_id</code> del usuario</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8067-a7c9-f3ea3cd9b538" class="">Ejemplo de Request</h3></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8003-8282-e221d85540d6" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;emailOrId&quot;: &quot;lucas@example.com&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8010-bd76-ff1ecf8f7cf5" class="">Ejemplo de Response</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-80e2-907e-d55e7cebe5a1" class=""><strong>200 OK</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-80ce-826e-fd9ecd56f6e9" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;_id&quot;: &quot;6510c5d5f5a3e3e5d2b9e1c3&quot;,
+  &quot;nombre&quot;: &quot;Lucas&quot;,
+  &quot;email&quot;: &quot;lucas@example.com&quot;,
+  &quot;purchases_history&quot;: [],
+  &quot;wishlist&quot;: [],
+  &quot;created_at&quot;: &quot;2025-12-02T11:00:00&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8062-9f60-cd6a4ec0c1fd" class="">Errores comunes</h3></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-802f-b1d7-d14f5403f528" class="bulleted-list"><li style="list-style-type:disc"><strong>404 Not Found:</strong> Usuario no existe.</li></ul></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8089-a153-f591a4f0a66d" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;error&quot;: &quot;Usuario no encontrado&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-80d6-ae8e-fa9d498ff4bf"/></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-803e-90fb-f548a2c7de1f" class="">2.3 Actualizar Usuario</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-800a-9475-f817d7c8da0f" class=""><strong>POST</strong> <code>/user/update</code></p></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-8086-881a-ef176172c4dc" class="">Actualiza información de un usuario. El password actual debe ser enviado para validar la operación.</p></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8049-b914-f2d557a51d90" class="">Parámetros JSON</h3></div><div style="display:contents" dir="ltr"><table id="2bd98dbf-b003-809b-8e7a-fa2901c95680" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-806b-8c64-de89a67a6bdb"><th id="eBPU" class="simple-table-header-color simple-table-header">Campo</th><th id="HLIX" class="simple-table-header-color simple-table-header">Tipo</th><th id="=Qz^" class="simple-table-header-color simple-table-header">Obligatorio</th><th id="{\Cj" class="simple-table-header-color simple-table-header">Descripción</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-80b4-aa1a-ead39363f6fc"><td id="eBPU" class="">email</td><td id="HLIX" class="">string</td><td id="=Qz^" class="">Sí</td><td id="{\Cj" class="">Email del usuario a actualizar</td></tr></div><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-8019-a280-ee42b2b50aed"><td id="eBPU" class="">password</td><td id="HLIX" class="">string</td><td id="=Qz^" class="">Sí</td><td id="{\Cj" class="">Contraseña actual para verificación</td></tr></div><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-8012-9af4-c475b0a3a4e4"><td id="eBPU" class="">update</td><td id="HLIX" class="">object</td><td id="=Qz^" class="">Sí</td><td id="{\Cj" class="">Campos a actualizar (<code>nombre</code>, <code>password</code>)</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8030-bf22-e1a7cdb7daf5" class="">Ejemplo de Request</h3></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8093-b75b-f238dab8bebb" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;email&quot;: &quot;lucas@example.com&quot;,
+  &quot;password&quot;: &quot;MiPassword123&quot;,
+  &quot;update&quot;: {
+    &quot;nombre&quot;: &quot;Lucas Fernández&quot;,
+    &quot;password&quot;: &quot;NuevaPassword456&quot;
+  }
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8043-8ab5-da2a8c1b74bb" class="">Ejemplo de Response</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-8008-a984-dfec4ccfcd43" class=""><strong>200 OK</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-800b-8a4f-d065fe785b32" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;message&quot;: &quot;Usuario actualizado&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-80f9-9497-f9a83a4bfcc4" class="">Errores comunes</h3></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-80c9-bcc8-cd2f660de2b8" class="bulleted-list"><li style="list-style-type:disc"><strong>401 Unauthorized:</strong> Password incorrecta.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-80a5-9264-ddf731ab3c90" class="bulleted-list"><li style="list-style-type:disc"><strong>404 Not Found:</strong> Usuario no existe.</li></ul></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-80ca-8158-c4072c20050a"/></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8037-85bb-ce212c42387f" class="">2.4 Eliminar Usuario</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-80df-abfd-faf948137eba" class=""><strong>POST</strong> <code>/user/delete</code></p></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-808c-9cef-dea098d61de1" class="">Elimina un usuario de la base de datos. Se requiere la contraseña para verificar identidad.</p></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-807b-88db-e799c1c1af27" class="">Parámetros JSON</h3></div><div style="display:contents" dir="ltr"><table id="2bd98dbf-b003-80db-a718-de51baa1f4d2" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-809f-ad33-e525796012d6"><th id="lPkG" class="simple-table-header-color simple-table-header">Campo</th><th id=":zrk" class="simple-table-header-color simple-table-header">Tipo</th><th id="qeby" class="simple-table-header-color simple-table-header">Obligatorio</th><th id="|&gt;PS" class="simple-table-header-color simple-table-header">Descripción</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-8025-9ab4-e164df71f082"><td id="lPkG" class="">email</td><td id=":zrk" class="">string</td><td id="qeby" class="">Sí</td><td id="|&gt;PS" class="">Email del usuario</td></tr></div><div style="display:contents" dir="ltr"><tr id="2bd98dbf-b003-80c5-8172-f83022f77e49"><td id="lPkG" class="">password</td><td id=":zrk" class="">string</td><td id="qeby" class="">Sí</td><td id="|&gt;PS" class="">Contraseña actual</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-8006-9e44-c605b7326ef8" class="">Ejemplo de Request</h3></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8075-9a1d-e9f24dc0f4ed" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;email&quot;: &quot;lucas@example.com&quot;,
+  &quot;password&quot;: &quot;MiPassword123&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-80d3-8723-dedfac8322ec" class="">Ejemplo de Response</h3></div><div style="display:contents" dir="auto"><p id="2bd98dbf-b003-809b-b629-d8a417407245" class=""><strong>200 OK</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-80ca-8751-eb6c3acd845b" class="code code-wrap"><code class="language-JSON" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;message&quot;: &quot;Usuario eliminado&quot;
+}
+
+</code></pre></div><div style="display:contents" dir="auto"><h3 id="2bd98dbf-b003-80e7-af64-d6b061aad5ab" class="">Errores comunes</h3></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-803f-8275-e137d766ce9f" class="bulleted-list"><li style="list-style-type:disc"><strong>401 Unauthorized:</strong> Password incorrecta.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bd98dbf-b003-8038-88d5-ff7df6a43e60" class="bulleted-list"><li style="list-style-type:disc"><strong>404 Not Found:</strong> Usuario no existe.</li></ul></div><div style="display:contents" dir="auto"><hr id="2bd98dbf-b003-80f3-997c-ca7f9c0f7e93"/></div><div style="display:contents" dir="auto"><h2 id="2bd98dbf-b003-808e-bf8c-cf6d94edd75b" class="">3. Notas Técnicas</h2></div><div style="display:contents" dir="auto"><ol type="1" id="2bd98dbf-b003-802e-9267-e712465163f3" class="numbered-list" start="1"><li><strong>Contraseñas:</strong> Se guardan como hash bytes (<code>bcrypt</code>). Para validar, siempre usar:</li></ol></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bd98dbf-b003-8059-b0ae-c541f2af025b" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">bcrypt.checkpw(password.encode(&quot;utf-8&quot;), user[&quot;password&quot;])
+
+</code></pre></div><div style="display:contents" dir="auto"><ol type="1" id="2bd98dbf-b003-80bf-adcf-f7d8c070421b" class="numbered-list" start="1"><li><strong>IDs de Mongo:</strong> <code>_id</code> se devuelve como string en JSON.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2bd98dbf-b003-8002-9eb5-cd26311b8007" class="numbered-list" start="2"><li><strong>Content-Type:</strong> Todos los requests deben enviar <code>application/json</code>.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2bd98dbf-b003-80ed-9325-c2dd20ad27c0" class="numbered-list" start="3"><li><strong>Fechas:</strong> Se devuelven en formato ISO 8601 (<code>YYYY-MM-DDTHH:MM:SS</code>).</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2bd98dbf-b003-803f-8718-dc3edc44ac0d" class="numbered-list" start="4"><li><strong>Futuro:</strong> Se puede agregar JWT para autenticación, endpoints de wishlist y compras, y filtros de búsqueda avanzados.</li></ol></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
