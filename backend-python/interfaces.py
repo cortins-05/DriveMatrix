@@ -1,27 +1,6 @@
 from typing import TypedDict, List, Optional
 from datetime import date
 
-""" Vehículo """
-class RetailListing(TypedDict):
-    price: float
-    dealer: str #Nombre del concesionario
-
-class Vehicle(TypedDict): #https://api.auto.dev/listings/{vin}
-    vin: str
-    location: List[float]
-    year: int
-    make: str
-    model: str
-    trim: str
-    driveTrain: str
-    engine: str
-    fuel: str
-    transmission: str
-    doors: int
-    seats: int
-    retailListing: Optional[RetailListing]
-    photos: Optional[List[str]] #https://api.auto.dev/photos/{vin}
-
 """ COMPRAS """
 class Purchases(TypedDict):
     id: int
@@ -49,3 +28,28 @@ class User(TypedDict):
     purchases_history: List[Purchases]
     wishList: WishList
     created_at: date
+
+    
+""" MAPEAR """
+
+#listing (all)
+def mapearListing(json):
+    return {
+        "titulo": json["api"]["description"],
+        "vehiculos":[mapearVehiculo(i) for i in json["data"]]
+    }
+    
+#vehiculo
+def mapearVehiculo(json):
+    return{
+        "vin": json["vin"],
+        "location": json["location"],
+        "doors": json["vehicle"].get("doors","none"),
+        "drivetrain":   json["vehicle"].get("drivetrain", "none"),
+        "engine":       json["vehicle"].get("engine", "none"),
+        "fuel":         json["vehicle"].get("fuel", "none"),
+        "make":         json["vehicle"].get("make", "none"),
+        "model":        json["vehicle"].get("model", "none"),
+        "seats":        json["vehicle"].get("seats", 0),
+        "transmission": json["vehicle"].get("transmission", "none"),
+    }
