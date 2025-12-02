@@ -41,7 +41,7 @@ SUB_retailListing_collection = conn["retailListing"]
 # ----------------------------
 # DOCUMENTACIÓN
 # ----------------------------
-@app.route("/")
+@app.route("/api")
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(base_dir, "DriveMatrix API v1 – Documentación para Developers.html")
@@ -51,7 +51,7 @@ def index():
 # ----------------------------
 
 # CREATE
-@app.route("/user/create", methods=["POST"])
+@app.route("/api/user/create", methods=["POST"])
 def add_user():
     data = request.get_json()
     nombre = data.get("nombre")
@@ -76,7 +76,7 @@ def add_user():
     return jsonify({"message": "Usuario creado", "user_id": str(result.inserted_id)}), 201
 
 # READ
-@app.route("/user/show", methods=["POST"])
+@app.route("/api/user/show", methods=["POST"])
 def see_user():
     query = request.get_json()
     try:
@@ -92,7 +92,7 @@ def see_user():
     return jsonify(user)
 
 # UPDATE
-@app.route("/user/update/<user_id>", methods=["PATCH"])
+@app.route("/api/user/update/<user_id>", methods=["PATCH"])
 def update_user(user_id):
     data = request.get_json()
     if not data:
@@ -128,7 +128,7 @@ def update_user(user_id):
     return jsonify({"message": "Usuario actualizado correctamente"}), 200
 
 # DELETE
-@app.route("/user/delete", methods=["POST"])
+@app.route("/api/user/delete", methods=["POST"])
 def delete_user():
     data = request.get_json()
     email = data.get("email")
