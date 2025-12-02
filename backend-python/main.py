@@ -31,7 +31,7 @@ except Exception as e:
 # ----------------------------
 users_collection = conn["users"]
 SUB_wishList = conn["wishList"]
-SUB_WishListItem = conn["WishListItem"]
+SUB_wishListItem = conn["WishListItem"]
 
 purchases_collection = conn["purchases"]
 
