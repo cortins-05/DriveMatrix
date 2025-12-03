@@ -54,6 +54,8 @@ def token_required(f):
         try:
             data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
             current_user = users_collection.find_one({"_id": ObjectId(data["user_id"])})
+            if current_user is None:
+                return jsonify({"error": "Usuario no encontrado"}), 401
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
         except Exception:
@@ -174,35 +176,59 @@ def see_user():
 
 # UPDATE
 @app.route("/api/user/update/<user_id>", methods=["PATCH"])
-def update_user(user_id):
+@token_required
+def update_user(current_user, user_id):
     data = request.get_json()
     if not data:
         return jsonify({"error": "No se proporcionaron datos para actualizar"}), 400
 
-    update_fields = {}
-
-    if "nombre" in data:
-        update_fields["nombre"] = data["nombre"]
-
-    if "password" in data:
-        update_fields["password"] = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
-
-    if "wishlist_items" in data and isinstance(data["wishlist_items"], list):
-        for item in data["wishlist_items"]:
-            if "vehicle_vin" in item:
-                item.setdefault("added_at", datetime.now())
-        update_fields.setdefault("wishlist", {"$each": []})
-        update_fields["wishlist"]["$each"].extend(data["wishlist_items"])
-
-    if not update_fields:
-        return jsonify({"error": "No hay campos válidos para actualizar"}), 400
-
+    # Validar ID objetivo
     try:
-        obj_id = ObjectId(user_id)
-    except:
+        target_obj_id = ObjectId(user_id)
+    except Exception:
         return jsonify({"error": "ID de usuario inválido"}), 400
 
-    result = users_collection.update_one({"_id": obj_id}, {"$set": update_fields})
+    # Autorización: sólo el propio usuario puede actualizar su perfil
+    if str(current_user["_id"]) != str(target_obj_id):
+        return jsonify({"error": "No autorizado para actualizar este usuario"}), 403
+
+    set_ops = {}
+    push_ops = {}
+
+    # Campos simples a setear
+    if "nombre" in data:
+        set_ops["nombre"] = data["nombre"]
+
+    if "password" in data:
+        set_ops["password"] = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
+
+    # Añadir items a wishlist (no sobrescribir)
+    if "wishlist_items" in data:
+        items = data["wishlist_items"]
+        if not isinstance(items, list):
+            return jsonify({"error": "wishlist_items debe ser una lista"}), 400
+        processed = []
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            if "vehicle_vin" not in item:
+                continue
+            itm = dict(item)
+            itm.setdefault("added_at", datetime.now())
+            processed.append(itm)
+        if processed:
+            push_ops["wishlist"] = {"$each": processed}
+
+    if not set_ops and not push_ops:
+        return jsonify({"error": "No hay campos válidos para actualizar"}), 400
+
+    update_doc = {}
+    if set_ops:
+        update_doc["$set"] = set_ops
+    if push_ops:
+        update_doc["$push"] = {k: v for k, v in push_ops.items()}
+
+    result = users_collection.update_one({"_id": target_obj_id}, update_doc)
     if result.matched_count == 0:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
