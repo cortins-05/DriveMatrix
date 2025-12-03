@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect, url_for
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 from interfaces import *
 import bcrypt
 from bson import ObjectId
 import os
 import requests
+import jwt
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -15,6 +17,8 @@ app = Flask(__name__)
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:1234@mongo:27017/")
 DB_NAME = "DriveMatrix"
 API_KEY = "sk_ad_YCDC78ICh3FxEstsjmxrnxAx"
+# Clave secreta para firmar el token
+app.config["SECRET_KEY"] = os.getenv("JWT_SECRET", "una_clave_muy_segura_y_larga")
 
 # ----------------------------
 # CONEXIÓN A MONGO
@@ -31,12 +35,32 @@ except Exception as e:
 # COLECCIONES
 # ----------------------------
 users_collection = conn["users"]
-SUB_wishList = conn["wishList"]
-SUB_wishListItem = conn["WishListItem"]
-
 purchases_collection = conn["purchases"]
-
 vehicles_collection = conn["vehicles"]
+
+# ----------------------------
+# TOKEN
+# ----------------------------
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"error": "Token requerido"}), 401
+
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        try:
+            data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
+            current_user = users_collection.find_one({"_id": ObjectId(data["user_id"])})
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expirado"}), 401
+        except Exception:
+            return jsonify({"error": "Token inválido"}), 401
+
+        return f(current_user, *args, **kwargs)
+    return decorated
 
 # ----------------------------
 # DOCUMENTACIÓN
@@ -45,6 +69,17 @@ vehicles_collection = conn["vehicles"]
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(base_dir, "DriveMatrix API v1 – Documentación para Developers.html")
+
+# ----------------------------
+# REDIRECCION
+# ----------------------------
+@app.route('/<path:any_path>')
+def catch_all(any_path):
+    return redirect(url_for('index'))
+
+@app.route('/')
+def root():
+    return redirect(url_for('index'))
 
 # ----------------------------
 # CRUD USUARIOS
@@ -74,6 +109,34 @@ def add_user():
 
     result = users_collection.insert_one(user_doc)
     return jsonify({"message": "Usuario creado", "user_id": str(result.inserted_id)}), 201
+
+# LOGIN
+@app.route("/api/user/login", methods=["POST"])
+def login_user():
+    query = request.get_json()
+    email = query.get("email")
+    password = query.get("password")
+    
+    if not email or not password:
+        return jsonify({"error": "Falta algun campo"}), 400
+
+    user = users_collection.find_one({"email": email})
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    if not bcrypt.checkpw(password.encode('utf-8'),user["password"]):
+        return jsonify({"error":"Contraseña incorrecta"}), 403
+    
+    # Payload del token
+    payload = {
+        "user_id": str(user["_id"]),
+        "exp": datetime.utcnow() + timedelta(hours=2)  # Expira en 2h
+    }
+
+    token = jwt.encode(payload, app.config["SECRET_KEY"], algorithm="HS256")
+
+    return jsonify({"token": token}), 200
 
 # READ
 @app.route("/api/user/show", methods=["POST"])
@@ -146,79 +209,99 @@ def update_user(user_id):
     return jsonify({"message": "Usuario actualizado correctamente"}), 200
 
 # DELETE
-@app.route("/api/user/delete", methods=["POST"])
-def delete_user():
-    data = request.get_json()
-    email = data.get("email")
-    password = data.get("password")
-    if not email or not password:
-        return jsonify({"error": "email y contraseña son requeridos"}), 400
-
-    user = users_collection.find_one({"email": email})
-    if not user:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-
-    if not bcrypt.checkpw(password.encode("utf-8"), user["password"]):
-        return jsonify({"error": "Contraseña incorrecta"}), 401
-
-    result = users_collection.delete_one({"_id": user["_id"]})
+@app.route("/api/user/delete", methods=["DELETE"])
+@token_required
+def delete_user(current_user):
+    result = users_collection.delete_one({"_id": current_user["_id"]})
     if result.deleted_count == 0:
         return jsonify({"error": "No se pudo eliminar el usuario"}), 500
 
     return jsonify({"message": "Usuario eliminado correctamente"}), 200
-
 
 # ----------------------------
 # CRUD VEHÍCULOS (STORE)
 # ----------------------------
 """ CREATE PURCHASE """
 @app.route("/api/purchase/create", methods=["POST"])
-def add_purchase():
+@token_required
+def add_purchase(current_user):
     data = request.get_json()
-    
-    email = data.get("email")
-    password = data.get("password")
     vehicle_vin = data.get("vehicle_vin")
-    
-    if not email or not password or not vehicle_vin:
-        return jsonify({"error": "email, contraseña y numero de vehiculo son requeridos"}), 400
+    if not vehicle_vin:
+        return jsonify({"error": "Falta vehicle_vin"}), 400
 
-    user = users_collection.find_one({"email": email})
-    if not user:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-
-    if not bcrypt.checkpw(password.encode("utf-8"), user["password"]):
-        return jsonify({"error": "Contraseña incorrecta"}), 401
-    
-    # Busca el documento que contiene el vehículo con el VIN
     vehiculo_doc = vehicles_collection.find_one({
         "vehiculos": {"$elemMatch": {"vin": str(vehicle_vin)}}
     })
     if not vehiculo_doc:
-        return jsonify({"error": "Vehiculo no encontrado"}), 403
+        return jsonify({"error": "Vehiculo no encontrado"}), 404
 
-    # Extrae solo el vehículo que coincide
     vehiculo = next(
         (v for v in vehiculo_doc["vehiculos"] if v["vin"] == vehicle_vin),
         None
     )
     if not vehiculo:
-        return jsonify({"error": "Vehiculo no encontrado"}), 403
+        return jsonify({"error": "Vehiculo no encontrado"}), 404
 
     venta = {
-        "ref_user_id": str(user["_id"]),
+        "ref_user_id": str(current_user["_id"]),
         "ref_vehicle_vin": vehiculo["vin"],
         "date": datetime.now()
     }
 
     result = purchases_collection.insert_one(venta)
     venta["_id"] = str(result.inserted_id)
-    
-    return jsonify({"Venta Creada:": venta})
-    
-    
-    
 
+    return jsonify({"Venta Creada": venta})
+
+""" NUEVO ITEM WISHLIST """
+@app.route("/api/user/wishlist/add", methods=["POST"])
+@token_required
+def add_wishlist_item(current_user):
+    data = request.get_json()
+    vehicle_vin = data.get("vehicle_vin")
+    if not vehicle_vin:
+        return jsonify({"error": "Falta vehicle_vin"}), 400
+
+    # Crear item
+    item = {"vehicle_vin": vehicle_vin, "added_at": datetime.now()}
+
+    # Evitar duplicados
+    if any(v["vehicle_vin"] == vehicle_vin for v in current_user.get("wishlist", [])):
+        return jsonify({"error": "Vehículo ya en wishlist"}), 400
+
+    users_collection.update_one(
+        {"_id": current_user["_id"]},
+        {"$push": {"wishlist": item}}
+    )
+
+    return jsonify({"message": "Vehículo agregado a wishlist", "item": item}), 200
+
+""" Eliminar item de wishlist """
+@app.route("/api/user/wishlist/remove", methods=["POST"])
+@token_required
+def remove_wishlist_item(current_user):
+    data = request.get_json()
+    vehicle_vin = data.get("vehicle_vin")
+    if not vehicle_vin:
+        return jsonify({"error": "Falta vehicle_vin"}), 400
+
+    result = users_collection.update_one(
+        {"_id": current_user["_id"]},
+        {"$pull": {"wishlist": {"vehicle_vin": vehicle_vin}}}
+    )
+
+    if result.modified_count == 0:
+        return jsonify({"error": "Vehículo no encontrado en wishlist"}), 404
+
+    return jsonify({"message": "Vehículo eliminado de wishlist"}), 200
+
+""" LISTAR WISHLIST """
+@app.route("/api/user/wishlist", methods=["GET"])
+@token_required
+def get_wishlist(current_user):
+    wishlist = current_user.get("wishlist", [])
+    return jsonify({"wishlist": wishlist}), 200
 
 # ----------------------------
 # VEHÍCULOS BD
