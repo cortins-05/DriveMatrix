@@ -40,6 +40,13 @@ vehicles_collection = conn["vehicles"]
 # ----------------------------
 # DOCUMENTACIÓN
 # ----------------------------
+@app.route("/")
+def check_api():
+    return "API WORKS!!!"
+
+# ----------------------------
+# DOCUMENTACIÓN
+# ----------------------------
 @app.route("/api")
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
