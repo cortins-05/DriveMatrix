@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect, url_for
 from pymongo import MongoClient
 from datetime import datetime
 from interfaces import *
 import bcrypt
 from bson import ObjectId
+from bson.errors import InvalidId
 import os
 import requests
 
@@ -44,7 +45,9 @@ vehicles_collection = conn["vehicles"]
 @app.route("/api")
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    return send_from_directory(base_dir, "DriveMatrix API v1 – Documentación para Developers.html")
+    return send_from_directory(base_dir, "Guía Rápida para Developers – Backend Flask.html")
+
+
 
 # ----------------------------
 # CRUD USUARIOS
@@ -53,7 +56,9 @@ def index():
 # CREATE
 @app.route("/api/user/create", methods=["POST"])
 def add_user():
-    data = request.get_json()
+    if not request.is_json:
+        return jsonify({"error":"Content-Type application/json requerido"}),415
+    data = request.get_json(silent=True) or {}
     nombre = data.get("nombre")
     email = data.get("email")
     password = data.get("password")
@@ -61,9 +66,12 @@ def add_user():
     if not nombre or not email or not password:
         return jsonify({"error": "nombre, email y contraseña son requeridos"}), 400
 
+    if users_collection.find_one({"email": email}):
+        return jsonify({"error": "El email ya está registrado"}), 409
+
     password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
-    user_doc: User = {
+    user_doc = {
         "nombre": nombre,
         "email": email,
         "password": password_hash,
@@ -78,7 +86,7 @@ def add_user():
 # READ
 @app.route("/api/user/show", methods=["POST"])
 def see_user():
-    query = request.get_json()
+    query = request.get_json(silent=True) or {}
     value = query.get("emailOrId")
     
     if not value:
@@ -90,7 +98,7 @@ def see_user():
     try:
         obj_id = ObjectId(value)
         user = users_collection.find_one({"_id": obj_id})
-    except:
+    except (InvalidId, TypeError):
         pass
 
     # Buscar por email
@@ -112,34 +120,45 @@ def see_user():
 # UPDATE
 @app.route("/api/user/update/<user_id>", methods=["PATCH"])
 def update_user(user_id):
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     if not data:
         return jsonify({"error": "No se proporcionaron datos para actualizar"}), 400
 
-    update_fields = {}
+    set_fields = {}
+    push_fields = {}
 
     if "nombre" in data:
-        update_fields["nombre"] = data["nombre"]
+        set_fields["nombre"] = data["nombre"]
 
     if "password" in data:
-        update_fields["password"] = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
+        set_fields["password"] = bcrypt.hashpw(data["password"].encode("utf-8"), bcrypt.gensalt())
 
-    if "wishlist_items" in data and isinstance(data["wishlist_items"], list):
-        for item in data["wishlist_items"]:
-            if "vehicle_vin" in item:
-                item.setdefault("added_at", datetime.now())
-        update_fields.setdefault("wishlist", {"$each": []})
-        update_fields["wishlist"]["$each"].extend(data["wishlist_items"])
+    wishlist_items = data.get("wishlist_items")
+    if isinstance(wishlist_items, list) and wishlist_items:
+        normalized_items = []
+        for item in wishlist_items:
+            if not isinstance(item, dict) or "vehicle_vin" not in item:
+                continue
+            item.setdefault("added_at", datetime.now())
+            normalized_items.append(item)
+        if normalized_items:
+            push_fields["wishlist"] = {"$each": normalized_items}
 
-    if not update_fields:
+    if not set_fields and not push_fields:
         return jsonify({"error": "No hay campos válidos para actualizar"}), 400
 
     try:
         obj_id = ObjectId(user_id)
-    except:
+    except (InvalidId, TypeError):
         return jsonify({"error": "ID de usuario inválido"}), 400
 
-    result = users_collection.update_one({"_id": obj_id}, {"$set": update_fields})
+    update_ops = {}
+    if set_fields:
+        update_ops["$set"] = set_fields
+    if push_fields:
+        update_ops["$push"] = push_fields
+
+    result = users_collection.update_one({"_id": obj_id}, update_ops)
     if result.matched_count == 0:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
@@ -148,7 +167,7 @@ def update_user(user_id):
 # DELETE
 @app.route("/api/user/delete", methods=["POST"])
 def delete_user():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     email = data.get("email")
     password = data.get("password")
     if not email or not password:
@@ -174,7 +193,7 @@ def delete_user():
 """ CREATE PURCHASE """
 @app.route("/api/purchase/create", methods=["POST"])
 def add_purchase():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     
     email = data.get("email")
     password = data.get("password")
@@ -214,7 +233,7 @@ def add_purchase():
     result = purchases_collection.insert_one(venta)
     venta["_id"] = str(result.inserted_id)
     
-    return jsonify({"Venta Creada:": venta})
+    return jsonify({"venta": venta}), 201
     
     
     
@@ -247,47 +266,44 @@ def filter_listings():
 
     # Construye filtro dinámico
     filtros = {}
-    if doors: filtros["doors"] = int(doors)
-    if drivetrain: filtros["drivetrain"] = drivetrain
-    if engine: filtros["engine"] = engine
-    if fuel: filtros["fuel"] = fuel
-    if make: filtros["make"] = make
-    if model: filtros["model"] = model
-    if seats: filtros["seats"] = int(seats)
-    if transmission: filtros["transmission"] = transmission
+    try:
+        if doors: filtros["doors"] = int(doors)
+        if drivetrain: filtros["drivetrain"] = drivetrain
+        if engine: filtros["engine"] = engine
+        if fuel: filtros["fuel"] = fuel
+        if make: filtros["make"] = make
+        if model: filtros["model"] = model
+        if seats: filtros["seats"] = int(seats)
+        if transmission: filtros["transmission"] = transmission
+    except ValueError:
+        return jsonify({"error": "Parámetros numéricos inválidos"}), 400
 
-    # Aggregation pipeline: extrae solo los vehículos que cumplan los filtros
-    pipeline = [
-        {
-            "$project": {
-                "vehiculos": {
-                    "$filter": {
-                        "input": "$vehiculos",
-                        "as": "v",
-                        "cond": {
-                            "$and": [
-                                {"$eq": ["$$v." + k, v]} for k, v in filtros.items()
-                            ]
-                        } if filtros else True
+    if filtros:
+        pipeline = [
+            {
+                "$project": {
+                    "vehiculos": {
+                        "$filter": {
+                            "input": "$vehiculos",
+                            "as": "v",
+                            "cond": {
+                                "$and": [
+                                    {"$eq": ["$$v." + k, v]} for k, v in filtros.items()
+                                ]
+                            }
+                        }
                     }
                 }
-            }
-        },
-        # Elimina documentos cuyo array filtrado esté vacío
-        {
-            "$match": {
-                "vehiculos.0": {"$exists": True}
-            }
-        },
-        # Desenrolla el array para que cada vehículo sea un documento independiente
-        {
-            "$unwind": "$vehiculos"
-        },
-        # Reemplaza la raíz con el vehículo para devolverlo directamente
-        {
-            "$replaceRoot": {"newRoot": "$vehiculos"}
-        }
-    ]
+            },
+            {"$match": {"vehiculos.0": {"$exists": True}}},
+            {"$unwind": "$vehiculos"},
+            {"$replaceRoot": {"newRoot": "$vehiculos"}}
+        ]
+    else:
+        pipeline = [
+            {"$unwind": "$vehiculos"},
+            {"$replaceRoot": {"newRoot": "$vehiculos"}}
+        ]
 
     docs = list(vehicles_collection.aggregate(pipeline))
 
@@ -301,20 +317,29 @@ def filter_listings():
 #GUARDAR TODOS LOS VEHICULOS EN MONGO
 @app.route("/auto/actualizarMongo")
 def listings_vehicles():
-    
-    vehicles_collection.delete_many({})
-    
     url = "https://api.auto.dev/listings?limit=9999"
-    
+
     headers = {
         'Authorization': f'Bearer {API_KEY}',
         'Content-Type': 'application/json'
     }
-    
-    response = requests.get(url,headers=headers)
-    
-    result = mapearListing(response.json())
-    
+
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except requests.RequestException as exc:
+        return jsonify({"error": f"Fallo al contactar auto.dev: {exc}"}), 502
+
+    if response.status_code != 200:
+        return jsonify({"error": "auto.dev devolvió un error", "status": response.status_code}), 502
+
+    try:
+        parsed = response.json()
+    except ValueError:
+        return jsonify({"error": "Respuesta de auto.dev no es JSON"}), 502
+
+    result = mapearListing(parsed)
+
+    vehicles_collection.delete_many({})
     inserted = vehicles_collection.insert_one(result)
     result["_id"] = str(inserted.inserted_id)
     return jsonify(result)
@@ -322,17 +347,34 @@ def listings_vehicles():
 #EN FUNCION DEL VIN VER IMÁGENES
 @app.route("/auto/image/<vin>")
 def show_auto_image(vin):
-    
     url = f"https://api.auto.dev/photos/{vin}"
-    
+
     headers = {
         'Authorization': f'Bearer {API_KEY}',
         'Content-Type': 'application/json'
     }
-    
-    response = requests.get(url,headers=headers)
-    
-    return response.json()["data"].get("retail",[]) 
+
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except requests.RequestException as exc:
+        return jsonify({"error": f"Fallo al contactar auto.dev: {exc}"}), 502
+
+    if response.status_code != 200:
+        return jsonify({"error": "auto.dev devolvió un error", "status": response.status_code}), 502
+
+    try:
+        data = response.json()
+    except ValueError:
+        return jsonify({"error": "Respuesta de auto.dev no es JSON"}), 502
+
+    return data.get("data", {}).get("retail", [])
+
+# ----------------------------
+# REDIRECCIÓN
+# ----------------------------
+@app.route('/<path:todo>')
+def catch_all(todo):
+    return redirect(url_for("index"))
 
 # ----------------------------
 # INICIALIZACIÓN

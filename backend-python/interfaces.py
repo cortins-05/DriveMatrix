@@ -1,35 +1,6 @@
 from typing import TypedDict, List, Optional
 from datetime import date
 
-""" COMPRAS """
-class Purchases(TypedDict):
-    id: int
-    ref_user_id: int
-    ref_vehicle_vin: str
-    total: float
-    date: date
-
-""" LISTA DE DESEOS """    
-class WishListItem(TypedDict):
-    vehicle_vin: str  # Referencia al VIN del vehículo
-    added_at: date    # Fecha en que se agregó a la lista
-    notes: Optional[str]  # Comentarios o recordatorios del usuario
-
-class WishList(TypedDict):
-    user_id: int             # Referencia al usuario
-    items: List[WishListItem]
-
-""" USUARIO """
-class User(TypedDict):
-    id: int
-    nombre: str
-    email: str
-    password: str
-    purchases_history: List[Purchases]
-    wishList: WishList
-    created_at: date
-
-    
 """ MAPEAR """
 
 #listing (all)
