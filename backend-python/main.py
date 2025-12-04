@@ -32,8 +32,6 @@ except Exception as e:
 # COLECCIONES
 # ----------------------------
 users_collection = conn["users"]
-SUB_wishList = conn["wishList"]
-SUB_wishListItem = conn["WishListItem"]
 
 purchases_collection = conn["purchases"]
 
@@ -46,8 +44,6 @@ vehicles_collection = conn["vehicles"]
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(base_dir, "Guía Rápida para Developers – Backend Flask.html")
-
-
 
 # ----------------------------
 # CRUD USUARIOS
