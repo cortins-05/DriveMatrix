@@ -12,15 +12,23 @@ def mapearListing(json):
     
 #vehiculo
 def mapearVehiculo(json):
+    vehicle = json.get("vehicle", {})
+
+    def to_int(val, default=None):
+        try:
+            return int(val)
+        except (TypeError, ValueError):
+            return default
+
     return{
-        "vin": json["vin"],
-        "location": json["location"],
-        "doors": json["vehicle"].get("doors","none"),
-        "drivetrain":   json["vehicle"].get("drivetrain", "none"),
-        "engine":       json["vehicle"].get("engine", "none"),
-        "fuel":         json["vehicle"].get("fuel", "none"),
-        "make":         json["vehicle"].get("make", "none"),
-        "model":        json["vehicle"].get("model", "none"),
-        "seats":        json["vehicle"].get("seats", 0),
-        "transmission": json["vehicle"].get("transmission", "none"),
+        "vin": json.get("vin"),
+        "location": json.get("location"),
+        "doors": to_int(vehicle.get("doors")),
+        "drivetrain":   vehicle.get("drivetrain"),
+        "engine":       vehicle.get("engine"),
+        "fuel":         vehicle.get("fuel"),
+        "make":         vehicle.get("make"),
+        "model":        vehicle.get("model"),
+        "seats":        to_int(vehicle.get("seats")),
+        "transmission": vehicle.get("transmission"),
     }
