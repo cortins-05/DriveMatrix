@@ -1,6 +1,5 @@
 # DriveMatrix
 
-
 Guía de despliegue de la app.
 
 ## **Necesario**
@@ -14,6 +13,7 @@ Guía de despliegue de la app.
 
 1. Acceder a la carpeta `frontend-angular`
 2. Ejecutar `npm install`
+3. `ng serve -o`
 
 ### Backend/Docker
 

@@ -8,5 +8,11 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend-angular');
+
+  setTheme() {
+    let theme = localStorage.getItem("theme") ? localStorage.getItem("theme") : document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute('data-theme', theme!);
+    localStorage.setItem('theme', theme!);
+  }
+
 }
