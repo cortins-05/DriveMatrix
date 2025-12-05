@@ -328,67 +328,67 @@ def add_purchase(current_user):
     
     
 
-    # ----------------------------
-    # WISHLIST
-    # ----------------------------
-    @app.route("/api/user/wishlist/add", methods=["POST"])
-    @token_required
-    def add_wishlist_item(current_user):
-        if not request.is_json:
-            return error_response("Content-Type application/json requerido", 415)
-        data = request.get_json(silent=True) or {}
-        vehicle_vin = data.get("vehicle_vin")
-        if not vehicle_vin:
-            return error_response("Falta vehicle_vin", 400)
-        vehicle_vin = str(vehicle_vin)
+# ----------------------------
+# WISHLIST
+# ----------------------------
+@app.route("/api/user/wishlist/add", methods=["POST"])
+@token_required
+def add_wishlist_item(current_user):
+    if not request.is_json:
+        return error_response("Content-Type application/json requerido", 415)
+    data = request.get_json(silent=True) or {}
+    vehicle_vin = data.get("vehicle_vin")
+    if not vehicle_vin:
+        return error_response("Falta vehicle_vin", 400)
+    vehicle_vin = str(vehicle_vin)
 
-        item = {"vehicle_vin": vehicle_vin, "added_at": datetime.now()}
-        try:
-            res = users_collection.update_one(
-                {"_id": current_user["_id"], "wishlist.vehicle_vin": {"$ne": vehicle_vin}},
-                {"$push": {"wishlist": item}}
-            )
-        except Exception:
-            logger.exception("Error agregando a wishlist")
-            return error_response("Error agregando a wishlist", 500)
+    item = {"vehicle_vin": vehicle_vin, "added_at": datetime.now()}
+    try:
+        res = users_collection.update_one(
+            {"_id": current_user["_id"], "wishlist.vehicle_vin": {"$ne": vehicle_vin}},
+            {"$push": {"wishlist": item}}
+        )
+    except Exception:
+        logger.exception("Error agregando a wishlist")
+        return error_response("Error agregando a wishlist", 500)
 
-        if res.modified_count == 0:
-            return error_response("Vehículo ya en wishlist", 400)
+    if res.modified_count == 0:
+        return error_response("Vehículo ya en wishlist", 400)
 
-        return jsonify({"message": "Vehículo agregado a wishlist", "item": serialize(item)}), 200
-
-
-    @app.route("/api/user/wishlist/remove", methods=["POST"])
-    @token_required
-    def remove_wishlist_item(current_user):
-        if not request.is_json:
-            return error_response("Content-Type application/json requerido", 415)
-        data = request.get_json(silent=True) or {}
-        vehicle_vin = data.get("vehicle_vin")
-        if not vehicle_vin:
-            return error_response("Falta vehicle_vin", 400)
-        vehicle_vin = str(vehicle_vin)
-
-        try:
-            result = users_collection.update_one(
-                {"_id": current_user["_id"]},
-                {"$pull": {"wishlist": {"vehicle_vin": vehicle_vin}}}
-            )
-        except Exception:
-            logger.exception("Error eliminando de wishlist")
-            return error_response("Error eliminando de wishlist", 500)
-
-        if result.modified_count == 0:
-            return error_response("Vehículo no encontrado en wishlist", 404)
-
-        return jsonify({"message": "Vehículo eliminado de wishlist"}), 200
+    return jsonify({"message": "Vehículo agregado a wishlist", "item": serialize(item)}), 200
 
 
-    @app.route("/api/user/wishlist", methods=["GET"])
-    @token_required
-    def get_wishlist(current_user):
-        wishlist = current_user.get("wishlist", [])
-        return jsonify({"wishlist": serialize(wishlist)}), 200
+@app.route("/api/user/wishlist/remove", methods=["POST"])
+@token_required
+def remove_wishlist_item(current_user):
+    if not request.is_json:
+        return error_response("Content-Type application/json requerido", 415)
+    data = request.get_json(silent=True) or {}
+    vehicle_vin = data.get("vehicle_vin")
+    if not vehicle_vin:
+        return error_response("Falta vehicle_vin", 400)
+    vehicle_vin = str(vehicle_vin)
+
+    try:
+        result = users_collection.update_one(
+            {"_id": current_user["_id"]},
+            {"$pull": {"wishlist": {"vehicle_vin": vehicle_vin}}}
+        )
+    except Exception:
+        logger.exception("Error eliminando de wishlist")
+        return error_response("Error eliminando de wishlist", 500)
+
+    if result.modified_count == 0:
+        return error_response("Vehículo no encontrado en wishlist", 404)
+
+    return jsonify({"message": "Vehículo eliminado de wishlist"}), 200
+
+
+@app.route("/api/user/wishlist", methods=["GET"])
+@token_required
+def get_wishlist(current_user):
+    wishlist = current_user.get("wishlist", [])
+    return jsonify({"wishlist": serialize(wishlist)}), 200
 
 
 
