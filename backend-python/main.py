@@ -46,10 +46,17 @@ purchases_collection = conn["purchases"]
 
 vehicles_collection = conn["vehicles"]
 
+valorations_user_product_collection = conn["valorations_user_product"]
+
 # Índices útiles (idempotente)
 try:
     users_collection.create_index("email", unique=True)
     vehicles_collection.create_index("vehiculos.vin")
+    # Índice único: un usuario solo puede valorar una vez por producto (vin)
+    valorations_user_product_collection.create_index(
+        [("user_id", 1), ("vehicle_vin", 1)],
+        unique=True
+    )
 except Exception:
     logger.exception("No se pudieron crear índices")
 
@@ -389,6 +396,188 @@ def remove_wishlist_item(current_user):
 def get_wishlist(current_user):
     wishlist = current_user.get("wishlist", [])
     return jsonify({"wishlist": serialize(wishlist)}), 200
+
+
+# ----------------------------
+# VALORACIONES (RATINGS)
+# ----------------------------
+
+# CREATE - Crear una nueva valoración
+@app.route("/api/valoration/create", methods=["POST"])
+@token_required
+def create_valoration(current_user):
+    if not request.is_json:
+        return error_response("Content-Type application/json requerido", 415)
+    data = request.get_json(silent=True) or {}
+    vehicle_vin = data.get("vehicle_vin")
+    rating = data.get("rating")
+    comment = data.get("comment", "")
+
+    if not vehicle_vin:
+        return error_response("Falta vehicle_vin", 400)
+    if rating is None:
+        return error_response("Falta rating", 400)
+
+    # Validar que rating esté entre 1 y 5
+    try:
+        rating = int(rating)
+        if rating < 1 or rating > 5:
+            return error_response("Rating debe ser entre 1 y 5", 400)
+    except (ValueError, TypeError):
+        return error_response("Rating debe ser un número entero", 400)
+
+    # Verificar que el vehículo existe
+    vehicle_exists = vehicles_collection.find_one({
+        "vehiculos": {"$elemMatch": {"vin": str(vehicle_vin)}}
+    })
+    if not vehicle_exists:
+        return error_response("Vehículo no encontrado", 404)
+
+    # Verificar que el usuario no ha valorado ya este producto
+    existing = valorations_user_product_collection.find_one({
+        "user_id": str(current_user["_id"]),
+        "vehicle_vin": str(vehicle_vin)
+    })
+    if existing:
+        return error_response("Ya has valorado este vehículo", 409)
+
+    valoration_doc = {
+        "user_id": str(current_user["_id"]),
+        "vehicle_vin": str(vehicle_vin),
+        "rating": rating,
+        "comment": comment,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
+    try:
+        result = valorations_user_product_collection.insert_one(valoration_doc)
+        valoration_doc["_id"] = str(result.inserted_id)
+        return jsonify({"message": "Valoración creada", "valoration": serialize(valoration_doc)}), 201
+    except Exception:
+        logger.exception("Error creando valoración")
+        return error_response("Error al crear valoración", 500)
+
+
+# READ - Obtener valoraciones por VIN (público)
+@app.route("/api/valorations/<vehicle_vin>", methods=["GET"])
+def get_valorations(vehicle_vin):
+    try:
+        page = int(request.args.get("page", 1))
+        per_page = int(request.args.get("per_page", 10))
+    except Exception:
+        return error_response("Parámetros de paginación inválidos", 400)
+
+    skip = (page - 1) * per_page
+    cursor = valorations_user_product_collection.find(
+        {"vehicle_vin": str(vehicle_vin)}
+    ).skip(skip).limit(per_page)
+    
+    valorations = [serialize(v) for v in cursor]
+    total_count = valorations_user_product_collection.count_documents(
+        {"vehicle_vin": str(vehicle_vin)}
+    )
+
+    # Calcular promedio de rating
+    avg_rating = 0
+    if valorations:
+        avg_rating = sum(v.get("rating", 0) for v in valorations) / len(valorations)
+
+    return jsonify({
+        "vehicle_vin": vehicle_vin,
+        "page": page,
+        "per_page": per_page,
+        "total": total_count,
+        "average_rating": round(avg_rating, 2),
+        "valorations": valorations
+    }), 200
+
+
+# UPDATE - Actualizar una valoración existente
+@app.route("/api/valoration/update/<valoration_id>", methods=["PATCH"])
+@token_required
+def update_valoration(current_user, valoration_id):
+    if not request.is_json:
+        return error_response("Content-Type application/json requerido", 415)
+    data = request.get_json(silent=True) or {}
+
+    try:
+        obj_id = ObjectId(valoration_id)
+    except (InvalidId, TypeError):
+        return error_response("ID de valoración inválido", 400)
+
+    # Obtener valoración existente
+    valoration = valorations_user_product_collection.find_one({"_id": obj_id})
+    if not valoration:
+        return error_response("Valoración no encontrada", 404)
+
+    # Verificar que es el propietario
+    if str(valoration["user_id"]) != str(current_user["_id"]):
+        return error_response("No autorizado para actualizar esta valoración", 403)
+
+    update_fields = {}
+
+    if "rating" in data:
+        try:
+            rating = int(data["rating"])
+            if rating < 1 or rating > 5:
+                return error_response("Rating debe ser entre 1 y 5", 400)
+            update_fields["rating"] = rating
+        except (ValueError, TypeError):
+            return error_response("Rating debe ser un número entero", 400)
+
+    if "comment" in data:
+        update_fields["comment"] = data["comment"]
+
+    if not update_fields:
+        return error_response("No hay campos válidos para actualizar", 400)
+
+    update_fields["updated_at"] = datetime.now()
+
+    try:
+        result = valorations_user_product_collection.update_one(
+            {"_id": obj_id},
+            {"$set": update_fields}
+        )
+    except Exception:
+        logger.exception("Error actualizando valoración")
+        return error_response("Error al actualizar valoración", 500)
+
+    if result.matched_count == 0:
+        return error_response("Valoración no encontrada", 404)
+
+    return jsonify({"message": "Valoración actualizada correctamente"}), 200
+
+
+# DELETE - Eliminar una valoración
+@app.route("/api/valoration/delete/<valoration_id>", methods=["DELETE"])
+@token_required
+def delete_valoration(current_user, valoration_id):
+    try:
+        obj_id = ObjectId(valoration_id)
+    except (InvalidId, TypeError):
+        return error_response("ID de valoración inválido", 400)
+
+    # Obtener valoración existente
+    valoration = valorations_user_product_collection.find_one({"_id": obj_id})
+    if not valoration:
+        return error_response("Valoración no encontrada", 404)
+
+    # Verificar que es el propietario
+    if str(valoration["user_id"]) != str(current_user["_id"]):
+        return error_response("No autorizado para eliminar esta valoración", 403)
+
+    try:
+        result = valorations_user_product_collection.delete_one({"_id": obj_id})
+    except Exception:
+        logger.exception("Error eliminando valoración")
+        return error_response("Error al eliminar valoración", 500)
+
+    if result.deleted_count == 0:
+        return error_response("Valoración no encontrada", 404)
+
+    return jsonify({"message": "Valoración eliminada correctamente"}), 200
+
 
 
 

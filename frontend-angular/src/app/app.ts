@@ -1,18 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Navbar } from './core/layout/navbar/navbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  imports: [RouterOutlet,Navbar],
+  templateUrl: './app.html'
 })
 export class App {
-
-  setTheme() {
-    let theme = localStorage.getItem("theme") ? localStorage.getItem("theme") : document.documentElement.getAttribute("data-theme");
-    document.documentElement.setAttribute('data-theme', theme!);
-    localStorage.setItem('theme', theme!);
-  }
 
 }

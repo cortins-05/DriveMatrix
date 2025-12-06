@@ -3,3 +3,12 @@
 @plugin "daisyui"{
   themes: luxury, corporate;
 }
+
+/* FUENTES */
+@font-face {
+  font-family: 'montserrat-md';
+  src: url('/fonts/Montserrat_Alternates/MontserratAlternates-Medium.ttf');
+}
+@theme{
+  --font-montserrat-md: 'montserrat-md',  'sans-serif';
+}
