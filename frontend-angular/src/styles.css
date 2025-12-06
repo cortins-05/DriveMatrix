@@ -12,3 +12,9 @@
 @theme{
   --font-montserrat-md: 'montserrat-md',  'sans-serif';
 }
+
+:root{
+  --swiper-pagination-color: yellow;
+  --swiper-pagination-bullet-inactive-color: gray;
+  --swiper-pagination-bullet-inactive-opacity: 0.7;
+}

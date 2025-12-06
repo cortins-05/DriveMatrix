@@ -1,4 +1,6 @@
-<main class="h-screen">
-  <app-navbar/>
-  <router-outlet class="overflow-y-scroll" />
+<main class="h-screen flex flex-col">
+  <app-navbar class="shrink-0" />
+  <div class="flex-1 overflow-y-scroll">
+    <router-outlet></router-outlet>
+  </div>
 </main>
