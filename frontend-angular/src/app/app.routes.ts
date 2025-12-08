@@ -8,6 +8,10 @@ export const routes: Routes = [
     component:MainPage
   },
   {
+    path:'catalog',
+    loadComponent: ()=>import("./pages/catalog-page/catalog-page")
+  },
+  {
     path:'about',
     component:AboutPage
   }

@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory, redirect, url_for
+from flask_cors import CORS
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from interfaces import *
@@ -13,6 +14,7 @@ from functools import wraps
 import logging
 
 app = Flask(__name__)
+CORS(app,resources={r"/api/*": {"origins": "http://localhost:4200"}})
 
 # Logger básico
 logging.basicConfig(level=logging.INFO)
@@ -590,14 +592,46 @@ def delete_valoration(current_user, valoration_id):
 def show_all():
     try:
         page = int(request.args.get("page", 1))
-        per_page = int(request.args.get("per_page", 100))
+        per_page = int(request.args.get("per_page", 10))
     except Exception:
         return error_response("Parámetros de paginación inválidos", 400)
-
+    
     skip = (page - 1) * per_page
-    cursor = vehicles_collection.find().skip(skip).limit(per_page)
-    docs = [serialize(d) for d in cursor]
-    return jsonify({"page": page, "per_page": per_page, "data": docs}), 200
+    
+    pipeline = [
+        {"$unwind": "$vehiculos"}, 
+    
+        {"$replaceRoot": {"newRoot": "$vehiculos"}}, 
+        
+        {"$skip": skip},  
+    
+        {"$limit": per_page} 
+    ]
+
+    try:
+    
+        cursor = vehicles_collection.aggregate(pipeline)
+        docs = [serialize(d) for d in cursor]
+        
+        count_pipeline = [
+            {"$unwind": "$vehiculos"},
+            {"$count": "total_count"}
+        ]
+        
+        total_count_result = list(vehicles_collection.aggregate(count_pipeline))
+        total_items = total_count_result[0]['total_count'] if total_count_result else 0
+
+    except Exception as e:
+    
+        print(f"Error de base de datos: {e}")
+        return error_response("Error al obtener los datos de vehículos", 500)
+
+    return jsonify({
+        "page": page,
+        "per_page": per_page, 
+        "total_items": total_items,
+        "data": docs
+    }), 200
 
 #BÚSQUEDA CON FILTROS
 @app.route("/api/auto/listings/filter")
