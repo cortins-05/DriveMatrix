@@ -13,7 +13,14 @@
       </ul>
     </div>
     <a class="btn btn-ghost text-xl font-montserrat-md" routerLink="/">Drive<span class="text-primary" >| Matrix</span> </a>
-    <button class="hidden md:block btn btn-sm btn-ghost bg-base-100 ml-3 gap-1 text-sm" (click)="toggleTheme()"><fa-icon [icon]="faSun"/>/<fa-icon [icon]="faMoon" /> </button>
+    <button class="hidden md:block btn btn-sm btn-ghost bg-base-100 ml-3 gap-1 text-sm" (click)="toggleTheme()">
+      @if(current_theme()=="luxury"){
+        <fa-icon [icon]="faMoon"/>
+      }
+      @if(current_theme()=="corporate"){
+        <fa-icon [icon]="faSun"/>
+      }
+    </button>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1 font-bold">
