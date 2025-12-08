@@ -12,13 +12,13 @@
         <button class="btn btn-xs btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()"><fa-icon [icon]="faSun"/>/<fa-icon [icon]="faMoon" /></button>
       </ul>
     </div>
-    <a class="btn btn-ghost text-xl font-montserrat-md">Drive<span class="text-primary" >| Matrix</span> </a>
+    <a class="btn btn-ghost text-xl font-montserrat-md" routerLink="/">Drive<span class="text-primary" >| Matrix</span> </a>
     <button class="hidden md:block btn btn-sm btn-ghost bg-base-100 ml-3 gap-1 text-sm" (click)="toggleTheme()"><fa-icon [icon]="faSun"/>/<fa-icon [icon]="faMoon" /> </button>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1 font-bold">
       <enlace-hover nombre="Catalog"/>
-      <enlace-hover nombre="About"/>
+      <enlace-hover nombre="About" routerLink="/about"/>
     </ul>
   </div>
   <div class="navbar-end">

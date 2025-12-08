@@ -5,7 +5,7 @@
     <!-- Slides -->
     @for (path of images_path(); track $index) {
       <div class="swiper-slide">
-        <img [src]="path" class="w-full h-full object-cover object-center">
+        <img [src]="path" class="w-full h-full object-contain object-center">
       </div>
     }
   </div>
