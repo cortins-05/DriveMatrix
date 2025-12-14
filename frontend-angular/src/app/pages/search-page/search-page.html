@@ -1,0 +1,31 @@
+<div class="flex flex-col h-full">
+  <div class="flex flex-col pt-2 pl-2 shrink-0">
+    <div class="flex gap-10 mb-4">
+      <label class="select">
+        <span class="label"> <fa-icon [icon]="lupa" /> Filter:</span>
+        <select (change)="onChange($event)" #filtro>
+          <option value="make" selected>Make</option>
+          <option value="model">Model</option>
+          <option value="transmission">Transmission</option>
+          <option value="fuel">Fuel</option>
+          <option value="engine">Engine</option>
+          <option value="drivetrain">Drivetrain</option>
+          <option value="doors">Doors</option>
+          <option value="seats">Seats</option>
+          <option value="location">Location</option>
+        </select>
+      </label>
+      <input type="text" placeholder="Value..." class="input" (keyup)="setearValorInput($event)" #valorInput>
+      <button (click)="buscar()" class="btn btn-primary btn-sm">Buscar</button>
+    </div>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto border-t">
+    <cars-table-component [dataList]="dataList()" />
+  </div>
+
+  <div class="join grid grid-cols-2 p-2 border-t shrink-0">
+    <button class="join-item btn btn-primary">Previous page</button>
+    <button class="join-item btn btn-secondary">Next</button>
+  </div>
+</div>

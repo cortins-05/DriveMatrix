@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {faSun, faMoon} from '@fortawesome/free-solid-svg-icons';
+import { faMoon,faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { EnlaceHover } from '../../../shared/components/enlaceHover/enlaceHover';
 import { RouterLink } from "@angular/router";
+import { QueryParamService } from '../../services/queryParam.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,9 +12,17 @@ import { RouterLink } from "@angular/router";
 })
 export class Navbar {
   current_theme = signal<"luxury"|"corporate">("luxury");
+  queryParam = inject(QueryParamService);
+  valorCatalogPage = this.queryParam.paginaActual;
+
+  catalogPage = signal(localStorage.getItem("catalog_current_page") ?? this.valorCatalogPage() ?? 1);
 
   constructor() {
     this.current_theme.set(this.loadTheme());
+    effect(()=>{
+      console.log('Cambio detectado:', this.valorCatalogPage());
+      this.catalogPage.set(localStorage.getItem("catalog_current_page") ?? this.valorCatalogPage() ?? 1);
+    })
   }
 
   private loadTheme():"luxury"|"corporate" {
@@ -31,7 +40,6 @@ export class Navbar {
     this.current_theme.set(newTheme);
   }
 
-  //FontAwesome
-  faSun = faSun;
   faMoon = faMoon;
+  lupa = faMagnifyingGlass;
 }

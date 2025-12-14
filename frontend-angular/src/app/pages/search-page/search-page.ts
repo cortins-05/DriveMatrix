@@ -1,27 +1,44 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { CarsTable } from '../../shared/components/carsTable/carsTable';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, map, switchMap } from 'rxjs';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
-import { MapBoxService } from '../../core/services/mapBox.service';
 import { QueryParamService } from '../../core/services/queryParam.service';
+import { MapBoxService } from '../../core/services/mapBox.service';
 import { ActivatedRoute } from '@angular/router';
-import { CarsTable } from '../../shared/components/carsTable/carsTable';
 
 @Component({
-  selector: 'app-catalog-page',
-  imports: [CarsTable],
-  templateUrl: './catalog-page.html',
+  selector: 'app-search-page',
+  imports: [FontAwesomeModule, CarsTable],
+  templateUrl: './search-page.html',
 })
-export class CatalogPage implements OnInit, OnDestroy {
-  http = inject(HttpClient);
+export class SearchPage {
   mapbox = inject(MapBoxService);
   queryParam = inject(QueryParamService);
+  http = inject(HttpClient);
   activatedRoute = inject(ActivatedRoute);
 
-  paginaActual = signal(1);
-  dataList=signal<AutoListing[]>([]);
+  dataList = signal<AutoListing[]>([]);
 
-  ngOnInit(): void {
+  filtroValor = signal<any>(null);
+  valorFiltro = signal<any>("");
+  setearValorInput(e:Event){
+    this.valorFiltro.set((e.target as HTMLInputElement).value);
+  }
+
+  lupa = faMagnifyingGlass;
+
+  @ViewChild('filtro')
+  filtroInicial!: ElementRef<HTMLSelectElement>;
+
+  onChange(e:Event){
+    this.filtroValor.set((e.target as HTMLSelectElement).value);
+  }
+
+  buscar(): void {
+    this.filtroValor.set(this.filtroInicial.nativeElement.value);
     this.activatedRoute.queryParamMap.pipe(
       map(params => {
         const pageParam = params.get("page");
@@ -30,10 +47,6 @@ export class CatalogPage implements OnInit, OnDestroy {
         return (!pageParam || isNaN(page) || page < 1) ? 1 : page;
       })
     ).subscribe(pageNumber => {
-      this.paginaActual.set(pageNumber);
-
-      console.log('Parámetro de página actualizado a:', pageNumber);
-
       this.loadData();
     });
   }
@@ -58,32 +71,23 @@ export class CatalogPage implements OnInit, OnDestroy {
   }
 
   loadData() {
-    const apiURL = "http://localhost:5000/api/auto/listings";
+    console.log(this.filtroValor());
+    console.log(this.valorFiltro());
+    const apiURL = "http://localhost:5000/api/auto/listings/filter";
     const params = new HttpParams()
-    .set("per_page", 10)
-    .set("page",this.paginaActual());
-
-    // 1. Tipamos el GET como 'any' porque la API devuelve location como array,
-    // pero nosotros queremos devolver 'AutoListing[]' al final.
+    .set(this.filtroValor(), this.valorFiltro())
     this.http.get<any>(apiURL, { params }).pipe(
-
-      // Paso 1: Limpieza básica (síncrona)
       map(response => {
-        const lista = response?.data || [];
+        console.log(response);
+        const lista = response || [];
         return lista.filter((item: any) => item !== null);
       }),
-
-      // Paso 2: Transformación asíncrona (Coordenadas -> Texto)
-      // Le decimos a switchMap: "Entra un array cualquiera, sale una Promesa de AutoListing[]"
       switchMap(async (lista) => {
-
         const promesas = lista.map(async (item:any) => {
-          // Resolvemos la ubicación
           const direccion = Array.isArray(item.location)
             ? await this.ResolverCoordenadas(item.location[0], item.location[1])
             : 'Ubicación desconocida';
 
-          // Construimos el objeto final LIMPIO usando la interfaz
           const autoLimpio: AutoListing = {
             make: item.make ?? 'Sin datos',
             model: item.model ?? 'Sin datos',
@@ -93,9 +97,8 @@ export class CatalogPage implements OnInit, OnDestroy {
             drivetrain: item.drivetrain ?? 'Sin datos',
             doors: item.doors ?? '0',
             seats: item.seats ?? '0',
-            location: direccion // Aquí asignamos el string resuelto
+            location: direccion
           };
-
           return autoLimpio;
         });
 
@@ -117,7 +120,4 @@ export class CatalogPage implements OnInit, OnDestroy {
 
 }
 
-export default CatalogPage;
-
-
-
+export default SearchPage;

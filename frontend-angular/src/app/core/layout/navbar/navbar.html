@@ -9,7 +9,14 @@
         class="menu menu-sm dropdown-content bg-base-200 mt-3 w-40 p-5 shadow font-bold ml-0">
         <enlace-hover nombre="Catalog"/>
         <enlace-hover nombre="About"/>
-        <button class="btn btn-xs btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()"><fa-icon [icon]="faSun"/>/<fa-icon [icon]="faMoon" /></button>
+        <button class="btn btn-xs btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()">
+          @if(current_theme()=="luxury"){
+            <fa-icon [icon]="faMoon"/>
+          }
+          @if(current_theme()=="corporate"){
+            <img src="sol.png" class="h-4/5">
+          }
+        </button>
       </ul>
     </div>
     <a class="btn btn-ghost text-xl font-montserrat-md" routerLink="/">Drive<span class="text-primary" >| Matrix</span> </a>
@@ -18,13 +25,22 @@
         <fa-icon [icon]="faMoon"/>
       }
       @if(current_theme()=="corporate"){
-        <fa-icon [icon]="faSun"/>
+        <img src="sol.png" class="h-4/5">
       }
     </button>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1 font-bold">
-      <enlace-hover nombre="Catalog" routerLink="/catalog"/>
+      <enlace-hover nombre="Catalog" routerLink="/catalog" [queryParams]="{page: catalogPage()}" />
+
+      <div class="bg-base-content w-0.5 mx-4 self-center justify-self-center h-7"></div>
+
+      <enlace-hover nombre="Search" routerLink="/search">
+        <fa-icon [icon]="lupa" class="cursor-pointer items-center justify-center flex"/>
+      </enlace-hover>
+
+      <div class="bg-base-content w-0.5 mx-4 self-center justify-self-center h-7"></div>
+
       <enlace-hover nombre="About" routerLink="/about"/>
     </ul>
   </div>

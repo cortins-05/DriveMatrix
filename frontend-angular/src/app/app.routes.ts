@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: ()=>import("./pages/catalog-page/catalog-page")
   },
   {
+    path:'search',
+    loadComponent: ()=>import("./pages/search-page/search-page")
+  },
+  {
     path:'about',
     component:AboutPage
   }
