@@ -14,7 +14,7 @@
   </thead>
 
   <tbody>
-    @for (item of dataList(); track $index) {
+    @for (item of paginatedData(); track $index) {
       <tr>
         <td>{{item['make']}}</td>
         <td>{{item['model']}}</td>

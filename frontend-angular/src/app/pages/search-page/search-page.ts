@@ -7,7 +7,6 @@ import { firstValueFrom, map, switchMap } from 'rxjs';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
 import { QueryParamService } from '../../core/services/queryParam.service';
 import { MapBoxService } from '../../core/services/mapBox.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-search-page',
@@ -18,15 +17,17 @@ export class SearchPage {
   mapbox = inject(MapBoxService);
   queryParam = inject(QueryParamService);
   http = inject(HttpClient);
-  activatedRoute = inject(ActivatedRoute);
 
   dataList = signal<AutoListing[]>([]);
+  paginaActual = signal(0);
 
   filtroValor = signal<any>(null);
   valorFiltro = signal<any>("");
   setearValorInput(e:Event){
     this.valorFiltro.set((e.target as HTMLInputElement).value);
   }
+
+  buscado = signal(false);
 
   lupa = faMagnifyingGlass;
 
@@ -39,24 +40,18 @@ export class SearchPage {
 
   buscar(): void {
     this.filtroValor.set(this.filtroInicial.nativeElement.value);
-    this.activatedRoute.queryParamMap.pipe(
-      map(params => {
-        const pageParam = params.get("page");
-        const page = Number(pageParam);
-
-        return (!pageParam || isNaN(page) || page < 1) ? 1 : page;
-      })
-    ).subscribe(pageNumber => {
-      this.loadData();
-    });
+    this.loadData();
+    this.buscado.set(true);
   }
 
   nextPage(){
-    this.queryParam.nextPage();
+    if(this.paginaActual()>(this.dataList().length/10)-1) return;
+    this.paginaActual.set(this.paginaActual()+1);
   }
 
   previousPage(){
-    this.queryParam.previousPage()
+    if(this.paginaActual()<=0) return;
+    this.paginaActual.set(this.paginaActual()-1);
   }
 
   async ResolverCoordenadas(lat: number, lon: number): Promise<string> {
@@ -113,11 +108,6 @@ export class SearchPage {
       error: (err) => console.error("Error al cargar:", err)
     });
   }
-
-  ngOnDestroy(): void {
-    this.queryParam.guardarRuta();
-  }
-
 }
 
 export default SearchPage;

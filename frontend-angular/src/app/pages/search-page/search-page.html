@@ -21,11 +21,13 @@
   </div>
 
   <div class="flex-1 min-h-0 overflow-y-auto border-t">
-    <cars-table-component [dataList]="dataList()" />
+    <cars-table-component [dataList]="dataList()" [pagination]="true" [page]="paginaActual()"/>
   </div>
 
-  <div class="join grid grid-cols-2 p-2 border-t shrink-0">
-    <button class="join-item btn btn-primary">Previous page</button>
-    <button class="join-item btn btn-secondary">Next</button>
-  </div>
+  @if(buscado()){
+    <div class="join grid grid-cols-2 p-2 border-t shrink-0">
+      <button class="join-item btn btn-primary" (click)="previousPage()">Previous page</button>
+      <button class="join-item btn btn-secondary" (click)="nextPage()" >Next</button>
+    </div>
+  }
 </div>
