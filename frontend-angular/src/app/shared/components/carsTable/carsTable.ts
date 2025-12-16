@@ -1,8 +1,9 @@
 import { Component, computed, input, OnInit, signal } from '@angular/core';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'cars-table-component',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './carsTable.html',
 })
 export class CarsTable {

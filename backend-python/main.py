@@ -645,6 +645,7 @@ def filter_listings():
     model = request.args.get("model")
     seats = request.args.get("seats")
     transmission = request.args.get("transmission")
+    vin = request.args.get("vin")
 
     # Construye filtro dinámico (numéricos exactos, strings case-insensitive)
     filtros = {}
@@ -671,6 +672,10 @@ def filter_listings():
         filtros["model"] = ci(model)
     if transmission:
         filtros["transmission"] = ci(transmission)
+        
+    if vin:
+        filtros = {}
+        filtros["vin"] = vin
 
     pipeline = [
         {"$unwind": "$vehiculos"},

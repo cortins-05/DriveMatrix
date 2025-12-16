@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild, AfterViewInit } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { CarsTable } from '../../shared/components/carsTable/carsTable';
@@ -73,7 +73,6 @@ export class SearchPage {
     .set(this.filtroValor(), this.valorFiltro())
     this.http.get<any>(apiURL, { params }).pipe(
       map(response => {
-        console.log(response);
         const lista = response || [];
         return lista.filter((item: any) => item !== null);
       }),
@@ -84,6 +83,7 @@ export class SearchPage {
             : 'Ubicación desconocida';
 
           const autoLimpio: AutoListing = {
+            vin: item.vin,
             make: item.make ?? 'Sin datos',
             model: item.model ?? 'Sin datos',
             transmission: item.transmission ?? 'Sin datos',

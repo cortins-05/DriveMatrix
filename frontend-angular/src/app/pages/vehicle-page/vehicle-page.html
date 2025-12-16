@@ -1,0 +1,16 @@
+@if (vehicleData()!=null) {
+  <h1 class="text-6xl font-bold underline">{{vehicleData()?.make}} {{vehicleData()?.model}} </h1>
+
+  <p> {{vehicleData()?.transmission}} </p>
+  <p> {{vehicleData()?.fuel}} </p>
+  <p> {{vehicleData()?.engine}} </p>
+  <p> {{vehicleData()?.drivetrain}} </p>
+  <p> {{vehicleData()?.doors}} </p>
+  <p> {{vehicleData()?.seats}} </p>
+
+  <swiper-carousel [images_path]="vehicleImages()" direction="horizontal" [speed]="1000" [pagination]="false"/>
+
+}
+@else {
+  <h1 class=" alert alert-error text-8xl uppercase" >No se encuentra el vehiculo</h1>
+}

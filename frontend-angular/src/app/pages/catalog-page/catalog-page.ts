@@ -85,6 +85,7 @@ export class CatalogPage implements OnInit, OnDestroy {
 
           // Construimos el objeto final LIMPIO usando la interfaz
           const autoLimpio: AutoListing = {
+            vin: item.vin,
             make: item.make ?? 'Sin datos',
             model: item.model ?? 'Sin datos',
             transmission: item.transmission ?? 'Sin datos',
