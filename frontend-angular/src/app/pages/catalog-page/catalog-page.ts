@@ -94,7 +94,7 @@ export class CatalogPage implements OnInit, OnDestroy {
             drivetrain: item.drivetrain ?? 'Sin datos',
             doors: item.doors ?? '0',
             seats: item.seats ?? '0',
-            location: direccion // Aquí asignamos el string resuelto
+            direction: direccion
           };
 
           return autoLimpio;

@@ -1,15 +1,110 @@
-@if (vehicleData()!=null) {
-  <h1 class="text-6xl font-bold underline">{{vehicleData()?.make}} {{vehicleData()?.model}} </h1>
+@if (vehicleData(); as car) {
+  <div class="min-h-full flex flex-col justify-center items-center bg-base-200 py-2">
 
-  <p> {{vehicleData()?.transmission}} </p>
-  <p> {{vehicleData()?.fuel}} </p>
-  <p> {{vehicleData()?.engine}} </p>
-  <p> {{vehicleData()?.drivetrain}} </p>
-  <p> {{vehicleData()?.doors}} </p>
-  <p> {{vehicleData()?.seats}} </p>
+    <div class="card bg-base-100 shadow-2xl max-w-6xl mx-auto overflow-hidden">
 
-  <swiper-carousel [images_path]="vehicleImages()" direction="horizontal" [speed]="1000" [pagination]="false"/>
+      <figure class="w-full flex items-center justify-center relative min-h-[400px]">
+        @if (vehicleImages() && vehicleImages().length > 0) {
+          <swiper-carousel
+            [images_path]="vehicleImages()"
+            direction="horizontal"
+            [speed]="900"
+            [pagination]="false"
+            class="h-full object-cover justify-self-center w-2/5"
+          />
+        } @else {
+          <div class="text-neutral-content flex flex-col items-center opacity-50">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20 h-20 mb-2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            <span>Sin imágenes disponibles</span>
+          </div>
+        }
+      </figure>
 
+      <div class="card-body w-full p-8">
+
+        <div class="mb-6 border-b border-base-300 pb-4">
+          <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
+            {{car.make}} <span class="text-primary">{{car.model}}</span>
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-6">
+
+          @if (car.transmission) {
+            <div class="stats bg-base-200 shadow-sm border border-base-300">
+              <div class="stat p-4">
+                <div class="stat-figure text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Transmisión</div>
+                <div class="stat-value text-xl">{{car.transmission}}</div>
+              </div>
+            </div>
+          }
+
+          @if (car.fuel) {
+            <div class="stats bg-base-200 shadow-sm border border-base-300">
+              <div class="stat p-4">
+                <div class="stat-figure text-secondary">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
+                  </svg>
+                </div>
+                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Combustible</div>
+                <div class="stat-value text-xl">{{car.fuel}}</div>
+              </div>
+            </div>
+          }
+
+          @if (car.engine) {
+             <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
+              <div class="stat p-4">
+                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Motor</div>
+                <div class="stat-value text-lg leading-tight">{{car.engine}}</div>
+              </div>
+            </div>
+          }
+
+          @if (car.drivetrain) {
+            <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
+              <div class="stat p-4">
+                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Tracción</div>
+                <div class="stat-value text-lg">{{car.drivetrain}}</div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-auto mb-7">
+          @if (car.doors) {
+            <div class="badge badge-lg badge-outline gap-2 p-4">
+              <span class="font-bold">{{car.doors}}</span> Puertas
+            </div>
+          }
+          @if (car.seats) {
+            <div class="badge badge-lg badge-outline gap-2 p-4">
+               <span class="font-bold">{{car.seats}}</span> Asientos
+            </div>
+          }
+        </div>
+
+        <div class="mb-6 border-y border-base-300 pb-4">
+          <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
+            Encuentra tu <span class="text-primary">concesionario</span>
+          </h2>
+        </div>
+        <div class="flex justify-center items-center bg-base-200 w-full">
+          <app-map-box class="w-full h-[700px]" [coords]="car.location!" />
+        </div>
+      </div>
+    </div>
+  </div>
 }
 @else {
   <h1 class=" alert alert-error text-8xl uppercase" >No se encuentra el vehiculo</h1>

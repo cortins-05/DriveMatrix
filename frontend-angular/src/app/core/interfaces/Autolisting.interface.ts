@@ -8,5 +8,6 @@ export interface AutoListing {
   engine: string;
   doors: string | number;
   seats: string | number;
-  location: string | number[];
+  location?: number[];
+  direction?: string
 }

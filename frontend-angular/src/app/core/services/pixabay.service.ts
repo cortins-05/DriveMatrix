@@ -10,15 +10,17 @@ export class PixabayService {
 
   url = "https://pixabay.com/api/";
 
-  searchImages(query:string) {
+  searchImages(query:string,slice:number) {
     const parameters = new HttpParams()
       .set('key', API_KEY)
-      .set('q', query);
+      .set('q', query)
+      .set("orientation","horizontal")
+      .set("image_type","photo");
 
     return this.http.get<any>(this.url, { params: parameters }).pipe(
       map(response => {
         if (response.totalHits > 3) {
-          return response.hits.slice(0, 3);
+          return response.hits.slice(0, slice);
         }
         return response.hits;
       })
