@@ -40,10 +40,12 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   nextPage(){
     this.queryParam.nextPage();
+    this.queryParam.guardarRuta();
   }
 
   previousPage(){
-    this.queryParam.previousPage()
+    this.queryParam.previousPage();
+    this.queryParam.guardarRuta();
   }
 
   async ResolverCoordenadas(lat: number, lon: number): Promise<string> {
@@ -114,6 +116,7 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.queryParam.guardarRuta();
+    console.log("Guardando ruta");
   }
 
 }

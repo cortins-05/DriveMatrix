@@ -9,13 +9,13 @@ export class QueryParamService {
   activatedRoute = inject(ActivatedRoute);
   router = inject(Router);
 
-  paginaActual = signal<number>(1);
+  paginaActual = signal<number>(Number(localStorage.getItem(PAGE_STORAGE_KEY)) ?? 1);
   constructor() {
     this.activatedRoute.queryParamMap.pipe(
       map(params => {
         const pageParam = params.get("page");
         const page = Number(pageParam);
-        return (!pageParam || isNaN(page) || page < 1) ? 1 : page;
+        return (!pageParam || isNaN(page) || page <= 1) ? 1 : page;
       })
     ).subscribe(pageNumber => {
       this.paginaActual.set(pageNumber);
@@ -25,8 +25,9 @@ export class QueryParamService {
 
   nextPage(){
     const currentPage = this.paginaActual();
-    if(currentPage == 50) return;
+    if(currentPage > 50) return;
     const newPage = currentPage + 1;
+    this.paginaActual.set(this.paginaActual()+1);
 
     this.router.navigate(
       [],
@@ -39,19 +40,18 @@ export class QueryParamService {
   }
 
   previousPage(){
-    const currentPage = this.paginaActual();
-    const newPage = Math.max(1, currentPage - 1);
+    const currentPage = this.paginaActual()-1;
 
-    if (newPage === currentPage){
-      this.guardarRuta();
+    if (currentPage < 1){
       return;
     }
+    this.paginaActual.set(this.paginaActual()-1);
 
     this.router.navigate(
       [],
       {
         relativeTo: this.activatedRoute,
-        queryParams:{ page: newPage },
+        queryParams:{ page: currentPage },
         queryParamsHandling: 'merge'
       }
     );
