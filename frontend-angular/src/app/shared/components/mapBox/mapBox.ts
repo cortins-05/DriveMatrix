@@ -6,7 +6,7 @@ import { MapBoxService } from '../../../core/services/mapBox.service';
   selector: 'app-map-box',
   imports: [],
   standalone: true,
-  templateUrl: './mapBox.html'
+  templateUrl: './mapBox.html',
 })
 export class MapBox implements OnInit, OnDestroy{
   mapBoxService = inject(MapBoxService);

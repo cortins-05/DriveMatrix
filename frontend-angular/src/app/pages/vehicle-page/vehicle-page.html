@@ -93,18 +93,20 @@
             </div>
           }
         </div>
-
-        <div class="mb-6 border-y border-base-300 pb-4">
-          <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
-            Encuentra tu <span class="text-primary">concesionario</span>
-          </h2>
-        </div>
-        <div class="flex justify-center items-center bg-base-200 w-full">
-          <app-map-box class="w-full h-[700px]" [coords]="car.location!" />
-        </div>
       </div>
     </div>
   </div>
+  <div class="divider"></div>
+  <details class="collapse bg-base-100 border border-base-300" name="my-accordion-det-1" close>
+    <summary class="collapse-title font-semibold">
+      <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
+        Encuentra tu <span class="text-primary">concesionario</span>
+      </h2>
+    </summary>
+    <div class="collapse-content w-[full] h-[700px]">
+      <app-map-box class="w-full h-full" [coords]="car.location!"/>
+    </div>
+  </details>
 }
 @else {
   <h1 class=" alert alert-error text-8xl uppercase" >No se encuentra el vehiculo</h1>
