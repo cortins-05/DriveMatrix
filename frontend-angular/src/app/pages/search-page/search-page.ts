@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { CarsTable } from '../../shared/components/carsTable/carsTable';
@@ -21,8 +21,15 @@ export class SearchPage {
   dataList = signal<AutoListing[]>([]);
   paginaActual = signal(0);
 
-  filtroValor = signal<any>(null);
+  filtroValor = signal<any>(["make"]);
+  textInputValue = ["make","model","engine"];
+  numberInputValue = ["doors","seats"];
   valorFiltro = signal<any>("");
+
+  setearSelect(e:Event){
+    this.valorFiltro.set((e.target as HTMLSelectElement).value);
+  }
+
   setearValorInput(e:Event){
     this.valorFiltro.set((e.target as HTMLInputElement).value);
   }
@@ -31,15 +38,35 @@ export class SearchPage {
 
   lupa = faMagnifyingGlass;
 
-  @ViewChild('filtro')
-  filtroInicial!: ElementRef<HTMLSelectElement>;
-
   onChange(e:Event){
-    this.filtroValor.set((e.target as HTMLSelectElement).value);
+    let valorEvento = (e.target as HTMLSelectElement).value;
+    let añadidos;
+    switch (valorEvento){
+      case "transmission":
+        añadidos=[
+          "Automated Manual",
+          "Manual",
+          "Automatic"
+        ]
+        break;
+      case "fuel":
+        añadidos=[
+          "Premium Unleaded (Recommended)",
+          "Diesel",
+          "Electric"
+        ]
+        break;
+      case "drivetrain":
+        añadidos=[
+          "FWD",
+          "AWD"
+        ]
+        break;
+    }
+    this.filtroValor.set([valorEvento, añadidos]);
   }
 
   buscar(): void {
-    this.filtroValor.set(this.filtroInicial.nativeElement.value);
     this.loadData();
     this.buscado.set(true);
   }
@@ -66,11 +93,9 @@ export class SearchPage {
   }
 
   loadData() {
-    console.log(this.filtroValor());
-    console.log(this.valorFiltro());
     const apiURL = "http://localhost:5000/api/auto/listings/filter";
     const params = new HttpParams()
-    .set(this.filtroValor(), this.valorFiltro())
+    .set(this.filtroValor()[0], this.valorFiltro())
     this.http.get<any>(apiURL, { params }).pipe(
       map(response => {
         const lista = response || [];

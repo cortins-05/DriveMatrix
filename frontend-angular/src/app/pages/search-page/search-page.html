@@ -15,7 +15,20 @@
           <option value="location">Location</option>
         </select>
       </label>
-      <input type="text" placeholder="Value..." class="input" (keyup)="setearValorInput($event)" #valorInput>
+
+      @if (textInputValue.includes(filtroValor()[0])){
+        <input type="text" placeholder="Value..." class="input" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
+      }
+      @else if (numberInputValue.includes(filtroValor()[0])) {
+        <input type="number" class="input" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
+      }
+      @else{
+        <select class="select" (change)="setearSelect($event)" >
+          @for (item of filtroValor()[1]; track $index) {
+            <option [value]="item">{{item}}</option>
+          }
+        </select>
+      }
       <button (click)="buscar()" class="btn btn-primary btn-sm">Buscar</button>
     </div>
   </div>

@@ -646,8 +646,7 @@ def filter_listings():
     seats = request.args.get("seats")
     transmission = request.args.get("transmission")
     vin = request.args.get("vin")
-
-    # Construye filtro dinámico (numéricos exactos, strings case-insensitive)
+    
     filtros = {}
     try:
         if doors:
@@ -658,7 +657,7 @@ def filter_listings():
         return jsonify({"error": "Parámetros numéricos inválidos"}), 400
 
     def ci(field_val):
-        return {"$regex": f"^{re.escape(field_val)}$", "$options": "i"}
+        return {"$regex": f".*{re.escape(field_val)}.*", "$options": "i"}
 
     if drivetrain:
         filtros["drivetrain"] = ci(drivetrain)
