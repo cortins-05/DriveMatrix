@@ -1,0 +1,3 @@
+interface tokenInterface{
+  token:string
+}

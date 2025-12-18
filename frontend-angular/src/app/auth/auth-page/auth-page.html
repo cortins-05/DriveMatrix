@@ -1,0 +1,79 @@
+<div class="flex gap-8 p-8 items-start">
+  <div
+    class="collapse border border-base-300 bg-primary rounded-3xl shadow-xl hover:shadow-2xl text-primary-content"
+    [class.collapse-open]="openSection === 'login'"
+  >
+    <div class="collapse-title cursor-pointer flex items-center justify-between" (click)="toggleSection('login')">
+      <div class="flex flex-col gap-1">
+        <span class="text-2xl font-bold tracking-tight ">Acceder</span>
+        <p class="font-normal text-sm">¿Tienes cuenta? Inicia sesión para continuar.</p>
+      </div>
+    </div>
+
+    <div class="collapse-content">
+      <!-- Login Form -->
+      <form class="text-primary flex flex-col gap-6 w-full" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+        <label class="input input-bordered w-full">
+          <fa-icon [icon]="emailIcon" class="text-2xl"></fa-icon>
+          <input type="email" name="email" formControlName="email" placeholder="Email"/>
+        </label>
+
+        <label class="input input-bordered w-full">
+          <fa-icon [icon]="passwordIcon" class="text-2xl" />
+          <input type="password" name="password" formControlName="password" placeholder="Contraseña">
+        </label>
+        <button type="submit" class="btn btn-md btn-primary-content">Acceder</button>
+      </form>
+      @if (loginHasError()) {
+        <div role="alert" class="alert alert-error mt-10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Porfavor revise la informacion ingresada</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div
+    class="collapse border border-base-300 bg-base-300 rounded-3xl shadow-xl hover:shadow-2xl text-base-content"
+    [class.collapse-open]="openSection === 'register'"
+  >
+    <div class="collapse-title cursor-pointer flex items-center justify-between" (click)="toggleSection('register')">
+      <div class="flex flex-col gap-1">
+        <span class="text-2xl font-bold tracking-tight ">Crear cuenta</span>
+        <p class="font-normal text-sm">¿No tienes cuenta? Regístrate y empieza ahora.</p>
+      </div>
+    </div>
+
+    <div class="collapse-content">
+      <!-- Register Form -->
+      <form class="flex flex-col gap-6 w-full" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+        <label class="input input-bordered w-full">
+          <fa-icon [icon]="userIcon" class="text-2xl"></fa-icon>
+          <input type="text" name="name" formControlName="name" placeholder="Usuario"/>
+        </label>
+
+        <label class="input input-bordered w-full">
+          <fa-icon [icon]="emailIcon" class="text-2xl"></fa-icon>
+          <input type="email" name="email" formControlName="email" placeholder="Email"/>
+        </label>
+
+        <label class="input input-bordered w-full">
+          <fa-icon [icon]="passwordIcon" class="text-2xl" />
+          <input type="password" name="password" formControlName="password" placeholder="Contraseña">
+        </label>
+        <button type="submit" class="btn btn-md btn-primary-content">Registrarte</button>
+      </form>
+      @if (registerHasError()) {
+        <div role="alert" class="alert alert-error mt-10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Porfavor revise la informacion ingresada</span>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

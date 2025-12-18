@@ -104,7 +104,9 @@
       </h2>
     </summary>
     <div class="collapse-content w-[full] h-[700px]">
-      <app-map-box class="w-full h-full" [coords]="car.location!"/>
+      <div class="h-full w-1/2 mx-auto mt-5">
+        <app-map-box class="h-full w-full" [coords]="car.location!"/>
+      </div>
     </div>
   </details>
 }

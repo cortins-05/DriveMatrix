@@ -82,3 +82,5 @@ export class VehiclePage implements OnInit {
     });
   }
 }
+
+export default  VehiclePage;
