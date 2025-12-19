@@ -1,5 +1,6 @@
-import { Component, computed, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'cars-table-component',
@@ -7,6 +8,9 @@ import { RouterLink } from "@angular/router";
   templateUrl: './carsTable.html',
 })
 export class CarsTable {
+
+  authService = inject(AuthService);
+
   dataList = input.required<any[]>();
   pagination = input(false);
 

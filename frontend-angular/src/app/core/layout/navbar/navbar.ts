@@ -4,6 +4,8 @@ import { faMoon,faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { EnlaceHover } from '../../../shared/components/enlaceHover/enlaceHover';
 import { RouterLink } from "@angular/router";
 import { QueryParamService } from '../../services/queryParam.service';
+import { AuthService } from '../../../auth/auth.service';
+import { AuthPage } from '../../../auth/auth-page/auth-page';
 
 @Component({
   selector: 'app-navbar',
@@ -15,10 +17,15 @@ export class Navbar {
   queryParam = inject(QueryParamService);
   valorCatalogPage = this.queryParam.paginaActual;
 
+  authService = inject(AuthService);
+
+  isAutenticated = this.authService.isAuthenticated;
+
   catalogPage = signal(localStorage.getItem("catalog_current_page") ?? this.valorCatalogPage() ?? 1);
 
   constructor() {
     this.current_theme.set(this.loadTheme());
+    this.authService.checkStatus();
     effect(()=>{
       console.log('Cambio detectado:', this.valorCatalogPage());
       this.catalogPage.set(localStorage.getItem("catalog_current_page") ?? this.valorCatalogPage() ?? 1);

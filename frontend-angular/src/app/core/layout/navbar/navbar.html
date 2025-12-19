@@ -45,6 +45,11 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <button class="btn" routerLink="/login">Login</button>
+    @if (isAutenticated()) {
+      <button class="btn btn-primary" (click)="authService.logout()">Logout</button>
+    }
+    @else {
+      <button class="btn" routerLink="/login">Login</button>
+    }
   </div>
 </div>

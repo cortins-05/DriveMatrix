@@ -18,6 +18,8 @@ export class AuthService {
   private _user = signal<User|null>(null)
   private _token = signal<string|null>(localStorage.getItem('token'));
 
+  isAuthenticated = signal(false);
+
   login(email:string,pass:string){
     const body = {
       "email": email,
@@ -35,25 +37,33 @@ export class AuthService {
     return this.http.post(registerURL,body);
   }
 
-  checkStatus():Observable<Boolean>{
-    const token = localStorage.getItem("token");
-    if(!token){
+  checkStatus(){
+    const token = localStorage.getItem('token');
+
+    if (!token) {
       this.logout();
+      this.isAuthenticated.set(false);
       return of(false);
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.get(checkURL, { headers }).pipe(
-      map(() => true),    
-      catchError(err => {
-        this.logout();
-        return of(false);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': token
       })
-    );
+    }
+
+    return this.http.get(checkURL, httpOptions)
+    .subscribe({
+      next: resp=>{
+        console.log(resp);
+        this.isAuthenticated.set(true);
+      },
+      error: err=>{
+        console.error(err);
+        this.isAuthenticated.set(false);
+      }
+    });
   }
 
 
@@ -61,6 +71,7 @@ export class AuthService {
     this._authStatus.set('not-authenticated');
     this._user.set(null);
     this._token.set(null);
+    this.isAuthenticated.set(false);
     localStorage.removeItem('token');
   }
 }

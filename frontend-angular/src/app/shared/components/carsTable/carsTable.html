@@ -25,7 +25,9 @@
         <td>{{item['doors']}}</td>
         <td>{{item['seats']}}</td>
         <td>{{item['direction']}}</td>
-        <td><button class="btn btn-sm btn-accent" routerLink="/vehicle" [queryParams]="{vin:item['vin']}" >Más...</button></td>
+        @if(authService.isAuthenticated()){
+          <td><button class="btn btn-sm btn-accent" routerLink="/vehicle" [queryParams]="{vin:item['vin']}" >Más...</button></td>
+        }
       </tr>
     }
   </tbody>

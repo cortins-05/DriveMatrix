@@ -115,6 +115,38 @@ def token_required(f):
 
     return decorated
 
+@app.route("/api/user/checkToken", methods=["GET"])
+def checkToken():
+    token = request.headers.get("Authorization")
+    if not token:
+        return error_response("Token requerido", 401)
+
+    if token.startswith("Bearer "):
+        token = token.split(" ", 1)[1]
+
+    try:
+        data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
+        user = users_collection.find_one({"_id": ObjectId(data["user_id"])})
+        
+        if user is None:
+            return error_response("Usuario no encontrado", 401)
+        
+        # Remover información sensible
+        user.pop("password", None)
+        
+        return jsonify({
+            "valid": True,
+            "user": serialize(user)
+        }), 200
+        
+    except jwt.ExpiredSignatureError:
+        return error_response("Token expirado", 401)
+    except jwt.InvalidTokenError:
+        return error_response("Token inválido", 401)
+    except Exception:
+        logger.exception("Error verificando token")
+        return error_response("Error al verificar token", 401)
+
 # ----------------------------
 # DOCUMENTACIÓN
 # ----------------------------
