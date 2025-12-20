@@ -51,7 +51,7 @@ export class AuthPage{
     this.authService.login(email,pass).subscribe({
       next: (response)=>{
         localStorage.setItem('token',response.token);
-        this.authService.isAuthenticated.set(true);
+        this.authService.checkStatus();
         this.router.navigateByUrl('/');
       },
       error: (err)=>{

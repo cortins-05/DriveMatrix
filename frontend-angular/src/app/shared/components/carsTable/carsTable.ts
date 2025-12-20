@@ -1,6 +1,8 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { AuthService } from '../../../auth/auth.service';
+import { PixabayService } from '../../../core/services/pixabay.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'cars-table-component',
@@ -10,6 +12,7 @@ import { AuthService } from '../../../auth/auth.service';
 export class CarsTable {
 
   authService = inject(AuthService);
+  pixabay = inject(PixabayService);
 
   dataList = input.required<any[]>();
   pagination = input(false);

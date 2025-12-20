@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { count, map } from 'rxjs';
+import { map } from 'rxjs';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
 import { PixabayService } from '../../core/services/pixabay.service';
 import { SwiperCarousel } from '../../shared/components/swiperCarousel/swiperCarousel';

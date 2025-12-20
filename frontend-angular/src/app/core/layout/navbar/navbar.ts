@@ -1,15 +1,16 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMoon,faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMoon,faMagnifyingGlass, faPerson } from '@fortawesome/free-solid-svg-icons';
 import { EnlaceHover } from '../../../shared/components/enlaceHover/enlaceHover';
 import { RouterLink } from "@angular/router";
 import { QueryParamService } from '../../services/queryParam.service';
 import { AuthService } from '../../../auth/auth.service';
 import { AuthPage } from '../../../auth/auth-page/auth-page';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [FontAwesomeModule, EnlaceHover, RouterLink],
+  imports: [FontAwesomeModule, EnlaceHover, RouterLink,TitleCasePipe],
   templateUrl: './navbar.html'
 })
 export class Navbar {
@@ -49,4 +50,5 @@ export class Navbar {
 
   faMoon = faMoon;
   lupa = faMagnifyingGlass;
+  userIcon = faPerson;
 }

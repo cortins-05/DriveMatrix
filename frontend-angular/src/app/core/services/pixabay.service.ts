@@ -22,6 +22,7 @@ export class PixabayService {
         if (response.totalHits > 3) {
           return response.hits.slice(0, slice);
         }
+        console.log("RespuestaPIXABAY"+response.hits);
         return response.hits;
       })
     );

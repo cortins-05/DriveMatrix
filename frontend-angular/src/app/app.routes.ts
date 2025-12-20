@@ -3,6 +3,7 @@ import { MainPage } from './pages/main-page/main-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { VehiclePage } from './pages/vehicle-page/vehicle-page';
 import { AuthPage } from './auth/auth-page/auth-page';
+import { NotAuthenticatedGuard } from './auth/guards/not-autenticated.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,10 @@ export const routes: Routes = [
     component:AuthPage
   },
   {
+    path:'profile',
+    loadComponent: ()=>import("./pages/profile-page/profile-page")
+  },
+  {
     path:'catalog',
     loadComponent: ()=>import("./pages/catalog-page/catalog-page")
   },
@@ -23,10 +28,17 @@ export const routes: Routes = [
   },
   {
     path:'vehicle',
-    loadComponent: ()=>import("./pages/vehicle-page/vehicle-page")
+    loadComponent: ()=>import("./pages/vehicle-page/vehicle-page"),
+    canMatch:[
+      NotAuthenticatedGuard
+    ]
   },
   {
     path:'about',
     component:AboutPage
+  },
+  {
+    path:'**',
+    redirectTo:''
   }
 ];

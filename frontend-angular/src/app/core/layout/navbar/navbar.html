@@ -46,7 +46,23 @@
   </div>
   <div class="navbar-end">
     @if (isAutenticated()) {
-      <button class="btn btn-primary" (click)="authService.logout()">Logout</button>
+      <div class="dropdown dropdown-bottom">
+        <label tabindex="0" class="btn btn-primary">
+          <fa-icon [icon]="userIcon" />  {{authService.user()?.user?.nombre | titlecase}}
+        </label>
+
+        <ul
+          tabindex="0"
+          class="dropdown-content menu bg-primary-content text-primary rounded-box mt-2 w-52 p-2 shadow z-100 right-0 origin-top-right"
+        >
+          <li><a routerLink="/profile">Perfil</a></li>
+          <li><a>Pedidos</a></li>
+          <li><a>Lista de deseos</a></li>
+          <li><a>Carrito</a></li>
+          <li><a (click)="authService.logout()">Cerrar sesión</a></li>
+        </ul>
+
+      </div>
     }
     @else {
       <button class="btn" routerLink="/login">Login</button>

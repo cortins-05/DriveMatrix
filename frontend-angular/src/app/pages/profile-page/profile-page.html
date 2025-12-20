@@ -1,0 +1,27 @@
+<h1 class="text-7xl font-bold underline text-center mb-10">Actualizar el Perfil</h1>
+
+<form class="flex flex-col gap-6 w-full p-20 bg-base-300 rounded-2xl" [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()">
+  <label class="input input-bordered w-full">
+    <fa-icon [icon]="userIcon" class="text-2xl"></fa-icon>
+    <input type="text" formControlName="nombre"/>
+  </label>
+
+  <label class="input input-bordered w-full">
+    <fa-icon [icon]="emailIcon" class="text-2xl"></fa-icon>
+    <input type="email" formControlName="email"/>
+  </label>
+
+  <label class="input input-bordered w-full">
+    <fa-icon [icon]="passwordIcon" class="text-2xl" />
+    <input type="password" formControlName="pass" placeholder="Nueva contraseña">
+  </label>
+  <button type="submit" class="btn btn-md btn-primary">Registrarte</button>
+</form>
+@if (formHasError()) {
+  <div role="alert" class="absolute right-5 bottom-5 alert alert-error text-md">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Porfavor revise la informacion ingresada</span>
+  </div>
+}
