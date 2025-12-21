@@ -1,5 +1,5 @@
 export interface AutoListing {
-  vin?: number;
+  vin?: string;
   make:string,
   model:string,
   transmission:string,

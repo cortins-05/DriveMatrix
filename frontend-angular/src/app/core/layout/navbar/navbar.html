@@ -53,12 +53,12 @@
 
         <ul
           tabindex="0"
-          class="dropdown-content menu bg-primary-content text-primary rounded-box mt-2 w-52 p-2 shadow z-100 right-0 origin-top-right"
+          class="dropdown-content menu bg-primary-content text-primary rounded-box mt-2 w-52 p-2 shadow z-100 right-0 origin-top-right opacity-90"
         >
           <li><a routerLink="/profile">Perfil</a></li>
           <li><a routerLink="/purchases" >Mis Compras</a></li>
           <li><a>Lista de deseos</a></li>
-          <li><a>Carrito</a></li>
+          <li><a routerLink="/cart" >Carrito</a></li>
           <li><a (click)="authService.logout()">Cerrar sesión</a></li>
         </ul>
 

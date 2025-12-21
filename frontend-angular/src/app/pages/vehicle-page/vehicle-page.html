@@ -27,7 +27,10 @@
         <div class="mb-6 border-b border-base-300 pb-4">
           <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
             {{car.make}} <span class="text-primary">{{car.model}}</span>
-            <button class="btn btn-lg btn-primary font-bold ml-auto" (click)="comprarVehiculo()" >Comprar</button>
+            <span class="ml-auto flex gap-7">
+              <button class="btn btn-lg btn-primary font-bold" (click)="comprarVehiculo()" >Comprar</button>
+              <button class="btn btn-lg btn-secondary font-bold" (click)="addCart()">Añadir al carrito</button>
+            </span>
           </h2>
         </div>
 
@@ -117,9 +120,28 @@
 
 @if(venta()!=null){
   @if(venta()){
-    <span class="bg-success p-10 text-2xl absolute top-5 left-1/2 rounded-2xl text-success-content font-bold" >Venta exitosa!</span>
+    <div role="alert" class="absolute bottom-5 right-5 alert alert-success">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Venta Confirmada!</span>
+    </div>
   }
   @else {
-    <span class="bg-error p-10 text-2xl absolute top-5 left-1/2 rounded-2xl text-error-content font-bold" >Error con la venta, no se ha podido realizar.</span>
+    <div role="alert" class="absolute bottom-5 right-5 alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Error! No se ha realizado la venta.</span>
+    </div>
   }
+}
+
+@if (carrito()) {
+  <div role="alert" class="absolute bottom-5 right-5 alert alert-success">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Añadido al carrito con exito.</span>
+  </div>
 }

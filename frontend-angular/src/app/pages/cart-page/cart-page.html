@@ -1,0 +1,26 @@
+<div class="overflow-x-auto">
+  <table class="table">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Cuantity</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of productos(); track $index) {
+        @if(carrito()[$index]['cuantity']>0){
+          <tr>
+            <td>{{item.make ? item.make : ''}} {{item.model ? item.model : ''}} </td>
+            <td> {{carrito()[$index]['cuantity'] ? carrito()[$index]['cuantity'] : 0}} </td>
+            <td class="flex gap-4">
+              <button class="btn btn-primary font-bold" (click)="cartService.add({'vehicle_vin':item.vin!,'cuantity':1})" > <fa-icon [icon]="plus"/> </button>
+              <button class="btn btn-warning font-bold" (click)="remove(item.vin!)" > <fa-icon [icon]="minus"/> </button>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

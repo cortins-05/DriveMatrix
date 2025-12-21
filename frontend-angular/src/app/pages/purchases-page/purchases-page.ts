@@ -29,6 +29,7 @@ export class PurchasesPage {
   imageList = signal<string[]>([]);
 
   form:FormGroup;
+  valoracion = signal<boolean|null>(null);
 
   constructor(){
 
@@ -67,7 +68,7 @@ export class PurchasesPage {
           this.getVehicleByVin(venta['ref_vehicle_vin'])
           .subscribe({
             next: exito=>{
-              this.purchases.update(list => [...list, exito['data'][0]]);
+              this.purchases.update(list => [...list, exito[0]]);
             },
             error: () => {
               this.purchases.update(list => [...list, null]);
@@ -110,16 +111,25 @@ export class PurchasesPage {
     .subscribe({
       next: exito=>{
         console.log("Valoracion publicada: ", exito);
+        this.valoracion.set(true);
+        setTimeout(()=>{
+          this.valoracion.set(null);
+        },2000);
       },
       error: err=>{
         console.error("Error inesperado: ",err);
+        this.valoracion.set(false);
+        setTimeout(()=>{
+          this.valoracion.set(null);
+        },2000);
       }
     })
 
   }
 
   getVehicleByVin(vin: string) {
-    return this.http.get<any>('http://localhost:5000/api/auto/listings',{"params":{"vin":vin}})
+    const url = 'http://localhost:5000/api/auto/listings/filter';
+    return this.http.get<any>(url, { params: { vin } });
   }
 
   cargarImagenes(listaCoches:any[]){

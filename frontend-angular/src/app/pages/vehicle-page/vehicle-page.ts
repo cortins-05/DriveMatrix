@@ -7,6 +7,7 @@ import { PixabayService } from '../../core/services/pixabay.service';
 import { SwiperCarousel } from '../../shared/components/swiperCarousel/swiperCarousel';
 import { MapBox } from '../../shared/components/mapBox/mapBox';
 import { AuthService } from '../../auth/auth.service';
+import { CartService } from '../../core/services/cart.service';
 
 const compraURL = "http://localhost:5000/api/purchase/create";
 
@@ -21,12 +22,22 @@ export class VehiclePage implements OnInit {
   http = inject(HttpClient);
   pixabay = inject(PixabayService);
   authService = inject(AuthService);
+  cartService = inject(CartService);
 
   vehicleVin = signal<string>("");
   vehicleData:WritableSignal<Partial<AutoListing>|null> = signal(null) ;
   vehicleImages = signal<any>(null);
 
   venta = signal<boolean|null>(null);
+  carrito = signal<boolean|null>(null);
+
+  addCart(){
+    this.cartService.add({"vehicle_vin":this.vehicleVin(),"cuantity":1});
+    this.carrito.set(true);
+    setTimeout(()=>{
+      this.carrito.set(null);
+    },2000);
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.pipe(
