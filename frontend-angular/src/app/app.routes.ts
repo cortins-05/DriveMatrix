@@ -34,6 +34,13 @@ export const routes: Routes = [
     ]
   },
   {
+    path:'purchases',
+    loadComponent: ()=>import("./pages/purchases-page/purchases-page"),
+    canMatch:[
+      NotAuthenticatedGuard
+    ]
+  },
+  {
     path:'about',
     component:AboutPage
   },

@@ -10,23 +10,30 @@ export class PixabayService {
 
   url = "https://pixabay.com/api/";
 
-  searchImages(query:string,slice:number) {
+  images = signal<string|string[]|null>(null);
+
+  searchImages(query: string, slice: number) {
     const parameters = new HttpParams()
       .set('key', API_KEY)
       .set('q', query)
-      .set("orientation","horizontal")
-      .set("image_type","photo");
+      .set('orientation', 'horizontal')
+      .set('image_type', 'photo');
 
     return this.http.get<any>(this.url, { params: parameters }).pipe(
       map(response => {
-        if (response.totalHits > 3) {
-          return response.hits.slice(0, slice);
+        if (!response?.hits || !Array.isArray(response.hits)) {
+          return [];
         }
-        console.log("RespuestaPIXABAY"+response.hits);
-        return response.hits;
+
+        const hits = response.totalHits > slice
+          ? response.hits.slice(0, slice)
+          : response.hits;
+
+        return hits.map((hit: any) => hit.largeImageURL);
       })
-    );
+    )
   }
+
 
 
 }

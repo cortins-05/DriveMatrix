@@ -27,6 +27,7 @@
         <div class="mb-6 border-b border-base-300 pb-4">
           <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
             {{car.make}} <span class="text-primary">{{car.model}}</span>
+            <button class="btn btn-lg btn-primary font-bold ml-auto" (click)="comprarVehiculo()" >Comprar</button>
           </h2>
         </div>
 
@@ -112,4 +113,13 @@
 }
 @else {
   <h1 class=" alert alert-error text-8xl uppercase" >No se encuentra el vehiculo</h1>
+}
+
+@if(venta()!=null){
+  @if(venta()){
+    <span class="bg-success p-10 text-2xl absolute top-5 left-1/2 rounded-2xl text-success-content font-bold" >Venta exitosa!</span>
+  }
+  @else {
+    <span class="bg-error p-10 text-2xl absolute top-5 left-1/2 rounded-2xl text-error-content font-bold" >Error con la venta, no se ha podido realizar.</span>
+  }
 }

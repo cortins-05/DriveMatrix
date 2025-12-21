@@ -95,7 +95,7 @@ export class SearchPage {
   loadData() {
     const apiURL = "http://localhost:5000/api/auto/listings/filter";
     const params = new HttpParams()
-    .set(this.filtroValor()[0], this.valorFiltro())
+    .set(this.filtroValor()[0], this.valorFiltro());
     this.http.get<any>(apiURL, { params }).pipe(
       map(response => {
         const lista = response || [];

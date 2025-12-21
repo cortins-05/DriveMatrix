@@ -366,7 +366,20 @@ def add_purchase(current_user):
     venta["_id"] = str(result.inserted_id)
     return jsonify({"venta": venta}), 201
     
-    
+@app.route("/api/purchase/show",methods=['GET'])
+@token_required
+def show_purchases(current_user):
+    user_id = str(current_user["_id"])
+
+    purchases = list(
+        purchases_collection.find(
+            {"ref_user_id": user_id}
+        ).sort("date", -1)
+    )
+
+    return jsonify({
+        "purchases": serialize(purchases)
+    }), 200
     
 
 # ----------------------------

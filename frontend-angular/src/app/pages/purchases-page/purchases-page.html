@@ -1,0 +1,68 @@
+<ul class="list bg-base-300 rounded-box shadow-md">
+
+  @for (item of purchases(); track $index) {
+    <li class="list-row flex flex-col gap-2">
+      <!-- Fila principal -->
+      <div class="flex items-center gap-4">
+        <div>
+          <img [src]="imageList()[$index]" alt="imagen" class="h-30" />
+        </div>
+
+        <div class="flex-1">
+          <div class="font-bold font-montserrat-md text-2xl">
+            {{ item!['make'] }} {{ item!['model'] }}
+          </div>
+        </div>
+
+        <div>
+          {{ ventas()[$index]['date'] | date }}
+        </div>
+      </div>
+
+      <!-- Details debajo -->
+      <form [formGroup]="form" (ngSubmit)="submit(ventas()[$index]['ref_vehicle_vin'])">
+        <input type="hidden" formControlName="vin">
+        <details class="collapse rounded-none">
+          <summary class="collapse-title font-bold text-primary text-xl">
+            Valorar <fa-icon [icon]="arrowDown" />
+          </summary>
+
+          <div class="collapse-content text-sm bg-base-100 border border-base-300 pt-3 flex flex-col gap-5">
+
+            <div>
+              <span class="font-bold">Puntuación:</span>
+              <div class="rating rating-lg">
+                <input type="radio" class="rating-hidden" />
+
+                <input type="radio" class="mask mask-star-2"
+                      value="1" formControlName="rating" />
+                <input type="radio" class="mask mask-star-2"
+                      value="2" formControlName="rating" />
+                <input type="radio" class="mask mask-star-2"
+                      value="3" formControlName="rating" />
+                <input type="radio" class="mask mask-star-2"
+                      value="4" formControlName="rating" />
+                <input type="radio" class="mask mask-star-2"
+                      value="5" formControlName="rating" />
+              </div>
+            </div>
+
+            <div class="flex justify-between items-end">
+              <textarea
+                class="textarea resize-none w-1/2"
+                placeholder="Comentario (opcional)"
+                formControlName="comment">
+              </textarea>
+
+              <button type="submit" class="btn btn-primary">
+                Publicar
+              </button>
+            </div>
+
+          </div>
+        </details>
+      </form>
+    </li>
+  }
+
+</ul>

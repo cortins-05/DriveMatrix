@@ -103,7 +103,6 @@ export class AuthService {
       next: resp=>{
         this.isAuthenticated.set(true);
         this.user.set(resp);
-        console.log(this.user());
       },
       error: err=>{
         this.isAuthenticated.set(false);

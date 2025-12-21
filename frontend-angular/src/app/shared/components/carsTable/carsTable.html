@@ -1,22 +1,25 @@
-@for (item of paginatedData(); track $index) {
-  <div class="card lg:card-side bg-base-100 shadow-sm">
-    <figure>
-      <img >
-    </figure>
-    <div class="card-body">
-      <h2 class="card-title">{{item['make']}} {{item['model']}}</h2>
-      <td>{{item['transmission']}}</td>
-      <td>{{item['fuel']}}</td>
-      <td>{{item['engine']}}</td>
-      <td>{{item['drivetrain']}}</td>
-      <td>{{item['doors']}}</td>
-      <td>{{item['seats']}}</td>
-      <td>{{item['direction']}}</td>
-      <div class="card-actions justify-end">
-      @if(authService.isAuthenticated()){
-        <button class="btn btn-sm btn-accent" routerLink="/vehicle" [queryParams]="{vin:item['vin']}" >Más...</button>
-      }
+<main class="w-full h-full grid grid-cols-2 gap-7">
+  @for (item of paginatedData(); track $index) {
+    <div
+      class="card card-side bg-base-300 shadow-sm cursor-pointer"
+      [routerLink]="authService.isAuthenticated() ? '/vehicle' : null"
+      [queryParams]="authService.isAuthenticated() ? { vin: item['vin'] } : null"
+      [class.pointer-events-none]="!authService.isAuthenticated()"
+    >
+      <figure>
+        <img
+          [src]="imageList()[$index]"
+          class="h-60"
+        >
+      </figure>
+      <div class="card-body">
+        <h2 class="card-title">{{item['make']}} {{item['model']}}</h2>
+        <p class="font-bold">{{item['transmission']}}, {{item['fuel']}}, {{item['engine']}}, {{item['drivetrain']}}.</p>
+        <p class="font-bold text-primary">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>
+        <p class="font-bold font-montserrat-md text-secondary bg-secondary-content rounded-2xl flex justify-center items-center text-center">{{item['direction']}}</p>
+        <div class="card-actions justify-end">
+        </div>
       </div>
     </div>
-  </div>
-}
+  }
+</main>

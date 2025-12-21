@@ -1,11 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
+import { map, of } from 'rxjs';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
 import { PixabayService } from '../../core/services/pixabay.service';
 import { SwiperCarousel } from '../../shared/components/swiperCarousel/swiperCarousel';
 import { MapBox } from '../../shared/components/mapBox/mapBox';
+import { AuthService } from '../../auth/auth.service';
+
+const compraURL = "http://localhost:5000/api/purchase/create";
 
 @Component({
   selector: 'app-vehicle-page',
@@ -17,10 +20,13 @@ export class VehiclePage implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   http = inject(HttpClient);
   pixabay = inject(PixabayService);
+  authService = inject(AuthService);
 
   vehicleVin = signal<string>("");
   vehicleData:WritableSignal<Partial<AutoListing>|null> = signal(null) ;
-  vehicleImages = signal<any>("");
+  vehicleImages = signal<any>(null);
+
+  venta = signal<boolean|null>(null);
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.pipe(
@@ -70,17 +76,46 @@ export class VehiclePage implements OnInit {
       this.vehicleData.set(finalyData);
       let longitud = Object.keys(finalyData).length;
       console.log(finalyData);
-      this.pixabay.searchImages(`${finalyData.make} ${finalyData.model} car`,longitud).pipe(
-        map((valoresIniciales:any[])=>{
-          return valoresIniciales.map(item=>item.largeImageURL);
-        })
-      )
-      .subscribe(valoresFinales=>{
-        this.vehicleImages.set(valoresFinales);
-        console.log(valoresFinales);
+      this.pixabay.searchImages(`${finalyData.make} ${finalyData.model} car`,longitud)
+      .subscribe(resp=>{
+        this.vehicleImages.set(resp);
       })
     });
   }
+
+  comprarVehiculo(){
+    if(this.vehicleVin()=='') return;
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.authService.logout();
+      this.authService.isAuthenticated.set(false);
+      return;
+    }
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': token
+      })
+    }
+
+    this.http.post(compraURL,{"vehicle_vin":this.vehicleVin()},httpOptions)
+    .subscribe({
+      next: exito=>{
+        this.venta.set(true);
+      },
+      error: err=>{
+        this.venta.set(false);
+      }
+    })
+
+    setTimeout(()=>{
+      this.venta.set(null);
+    },2000);
+
+  }
+
 }
 
 export default  VehiclePage;
