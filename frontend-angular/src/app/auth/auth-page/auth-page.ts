@@ -19,7 +19,6 @@ export class AuthPage{
   loginHasError = signal(false);
   registerHasError = signal(false);
 
-  /* Toggle Del CheckBox */
   openSection: 'login' | 'register' | null = null;
 
   toggleSection(section: 'login' | 'register') {

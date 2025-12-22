@@ -59,7 +59,7 @@ export class ProfilePage {
         },2000);
       },
       error: (err)=>{
-        console.log(err);
+        (err);
       }
     })
   }

@@ -112,9 +112,9 @@
             </h2>
           </summary>
           <div class="collapse-content w-[full] flex flex-col gap-5">
-            @if(valorations() && valorations.length>0){
+            @if(valorations()&&valorations()!.length>0){
               @for(valoration of valorations();track $index){
-                <app-valoration [vehicle_vin]="valoration.vehicle_vin" [tipe]="3" [user_valoration]="valoration" />
+                <app-valoration [vehicle_vin]="valoration.vehicle_vin" [tipe]="3" [valorationElement]="valoration" />
               }
             }@else {
               <h1 class="text-2xl text-secondary font-semibold">Todavia no hay valoraciones.</h1>

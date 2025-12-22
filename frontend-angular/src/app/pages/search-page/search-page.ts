@@ -128,7 +128,6 @@ export class SearchPage {
     .subscribe({
       next: (data) => {
         this.dataList.set(data);
-        console.log("Datos listos:", this.dataList());
       },
       error: (err) => console.error("Error al cargar:", err)
     });

@@ -28,7 +28,6 @@ export class Navbar {
     this.current_theme.set(this.loadTheme());
     this.authService.checkStatus();
     effect(()=>{
-      console.log('Cambio detectado:', this.valorCatalogPage());
       this.catalogPage.set(localStorage.getItem("catalog_current_page") ?? this.valorCatalogPage() ?? 1);
     })
   }

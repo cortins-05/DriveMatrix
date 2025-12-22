@@ -31,9 +31,6 @@ export class CatalogPage implements OnInit, OnDestroy {
       })
     ).subscribe(pageNumber => {
       this.paginaActual.set(pageNumber);
-
-      console.log('Parámetro de página actualizado a:', pageNumber);
-
       this.loadData();
     });
   }
@@ -65,27 +62,19 @@ export class CatalogPage implements OnInit, OnDestroy {
     .set("per_page", 10)
     .set("page",this.paginaActual());
 
-    // 1. Tipamos el GET como 'any' porque la API devuelve location como array,
-    // pero nosotros queremos devolver 'AutoListing[]' al final.
     this.http.get<any>(apiURL, { params }).pipe(
 
-      // Paso 1: Limpieza básica (síncrona)
       map(response => {
         const lista = response?.data || [];
         return lista.filter((item: any) => item !== null);
       }),
 
-      // Paso 2: Transformación asíncrona (Coordenadas -> Texto)
-      // Le decimos a switchMap: "Entra un array cualquiera, sale una Promesa de AutoListing[]"
       switchMap(async (lista) => {
 
         const promesas = lista.map(async (item:any) => {
-          // Resolvemos la ubicación
           const direccion = Array.isArray(item.location)
             ? await this.ResolverCoordenadas(item.location[0], item.location[1])
             : 'Ubicación desconocida';
-
-          // Construimos el objeto final LIMPIO usando la interfaz
           const autoLimpio: AutoListing = {
             vin: item.vin,
             make: item.make ?? 'Sin datos',
@@ -108,7 +97,6 @@ export class CatalogPage implements OnInit, OnDestroy {
     .subscribe({
       next: (data) => {
         this.dataList.set(data);
-        console.log("Datos listos:", this.dataList());
       },
       error: (err) => console.error("Error al cargar:", err)
     });
@@ -116,7 +104,7 @@ export class CatalogPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.queryParam.guardarRuta();
-    console.log("Guardando ruta");
+    ("Guardando ruta");
   }
 
 }

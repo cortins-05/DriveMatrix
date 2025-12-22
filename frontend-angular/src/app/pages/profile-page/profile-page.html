@@ -21,7 +21,7 @@
     <h1 class="text-center font-bold text-2xl">Mis Valoraciones</h1>
     <div class="grid grid-cols-2 gap-5 mt-5 overflow-y-scroll max-h-85">
       @for (valoracion of user()?.valorations; track $index) {
-        <app-valoration [vehicle_vin]="valoracion.vehicle_vin" [tipe]="2" [user_valoration]="valoracion" />
+        <app-valoration [vehicle_vin]="valoracion.vehicle_vin" [tipe]="2" [valorationElement]="valoracion" />
       }
     </div>
   </div>

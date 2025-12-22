@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AfterViewInit, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../auth/auth.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -28,7 +28,7 @@ export class Valoration {
 
   vehicle_vin = input.required<string>();
   tipe = input.required<number>();
-  user_valoration = input<ValorationElement | null>();
+  valorationElement = input<ValorationElement | null>();
 
   vehicle_info = signal<AutoListing|null>(null);
 
@@ -41,15 +41,16 @@ export class Valoration {
     });
 
     effect(() => {
-      const val = this.user_valoration();
+      const val = this.valorationElement();
+      const ratingCtrl = this.form.get('rating');
 
       if (this.tipe() === 2 && !val) {
-        throw new Error('user_valoration es obligatorio cuando tipe === 2');
+        throw new Error('valorationElement es obligatorio cuando tipe === 2');
       }
 
       if(this.tipe()==3){
-
-        this.authService.showUser(this.user_valoration()?.user_id!)
+        ratingCtrl?.disable({ emitEvent: false });
+        this.authService.showUser(this.valorationElement()?.user_id!)
         .subscribe({
           next: resp =>{
             this.user.set(resp);
@@ -62,7 +63,7 @@ export class Valoration {
           rating: String(val.rating),
           comment: val.comment,
         });
-        this.cartService.getVehicleByVin(this.user_valoration()?.vehicle_vin!)
+        this.cartService.getVehicleByVin(this.valorationElement()?.vehicle_vin!)
         .subscribe({
           next: resp=>{
             this.vehicle_info.set(resp[0]);
@@ -71,17 +72,6 @@ export class Valoration {
             console.error(err);
           }
         })
-      }
-    });
-
-    // Deshabilitar el rating si tipe === 3 (valor fijo, no editable)
-    effect(() => {
-      const t = this.tipe();
-      const ratingCtrl = this.form.get('rating');
-      if (t === 3) {
-        ratingCtrl?.disable({ emitEvent: false });
-      } else {
-        ratingCtrl?.enable({ emitEvent: false });
       }
     });
   }
@@ -124,7 +114,7 @@ export class Valoration {
         rating,
         comment
       };
-      this.http.patch("http://localhost:5000/api/valoration/update/"+this.user_valoration()?.valoration_id,body,httpOptions).subscribe({
+      this.http.patch("http://localhost:5000/api/valoration/update/"+this.valorationElement()?.valoration_id,body,httpOptions).subscribe({
         next: () => {
           this.valoracion.set(true);
           this.authService.checkStatus();
@@ -132,8 +122,8 @@ export class Valoration {
         },
         error: err => {
           this.valoracion.set(false);
-          console.log(this.user_valoration());
-          console.log(err);
+          (this.valorationElement());
+          (err);
           setTimeout(() => this.valoracion.set(null), 2000);
         },
       });

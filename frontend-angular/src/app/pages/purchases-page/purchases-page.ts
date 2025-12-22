@@ -43,7 +43,7 @@ export class PurchasesPage {
       if (lista.length > 0) {
         this.cargarImagenes(lista.map(v => v.vehicle));
       }
-      console.log(this.purchases().map(p => p.vehicle.vin));
+      (this.purchases().map(p => p.vehicle.vin));
     });
 
     const httpOptions = {

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { SwiperCarousel } from '../../shared/components/swiperCarousel/swiperCarousel';
-import { AuthService } from '../../auth/auth.service';
 import { TitleCasePipe } from '@angular/common';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-main-page',

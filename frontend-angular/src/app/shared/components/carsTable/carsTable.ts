@@ -59,7 +59,7 @@ export class CarsTable {
   }
 
   cargarImagenes(listaCoches:any[]){
-    console.log(listaCoches);
+    (listaCoches);
     let lista_temporal:any[]=[];
     for(let coche of listaCoches){
       this.pixabay.searchImages(`${coche.make} ${coche.model} car`,1)

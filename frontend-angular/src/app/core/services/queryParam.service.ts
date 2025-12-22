@@ -19,7 +19,6 @@ export class QueryParamService {
       })
     ).subscribe(pageNumber => {
       this.paginaActual.set(pageNumber);
-      console.log('Página actual (Reactiva):', pageNumber);
     });
   }
 

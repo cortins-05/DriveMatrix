@@ -3,7 +3,6 @@ import { Autoplay, EffectCoverflow, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { AfterViewInit, Component, ElementRef, input, viewChild } from '@angular/core';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'swiper-carousel',

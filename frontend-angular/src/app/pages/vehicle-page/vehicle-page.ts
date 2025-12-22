@@ -99,7 +99,7 @@ export class VehiclePage implements OnInit {
     .subscribe(finalyData=>{
       this.vehicleData.set(finalyData);
       let longitud = Object.keys(finalyData).length;
-      console.log(finalyData);
+      (finalyData);
       this.pixabay.searchImages(`${finalyData.make} ${finalyData.model} car`,longitud)
       .subscribe(resp=>{
         this.vehicleImages.set(resp);
@@ -178,6 +178,9 @@ export class VehiclePage implements OnInit {
     .subscribe({
       next: valoraciones => {
         this.valorations.set(valoraciones.valorations);
+      },
+      error: err => {
+        console.error('Error al obtener valoraciones:', err);
       }
     })
   }
