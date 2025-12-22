@@ -30,6 +30,11 @@
             <span class="ml-auto flex gap-7">
               <button class="btn btn-lg btn-primary font-bold" (click)="comprarVehiculo()" >Comprar</button>
               <button class="btn btn-lg btn-secondary font-bold" (click)="addCart()">Añadir al carrito</button>
+              @if (inWishlist()) {
+                <fa-icon [icon]="fullHeart" class="cursor-pointer" (click)="eliminarWishList()" />
+              }@else {
+                <fa-icon [icon]="emptyHeart" class="cursor-pointer" (click)="anadirWishList()" />
+              }
             </span>
           </h2>
         </div>

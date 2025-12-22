@@ -2,21 +2,27 @@ import { Component, computed, inject, input, OnInit, signal, effect } from '@ang
 import { RouterLink } from "@angular/router";
 import { AuthService } from '../../../auth/auth.service';
 import { PixabayService } from '../../../core/services/pixabay.service';
-import { QueryParamService } from '../../../core/services/queryParam.service';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeart2 } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { WishListService } from '../../../core/services/wishList.service';
 
 @Component({
   selector: 'cars-table-component',
-  imports: [RouterLink],
+  imports: [RouterLink,FontAwesomeModule],
   templateUrl: './carsTable.html',
 })
 export class CarsTable {
 
   authService = inject(AuthService);
   pixabay = inject(PixabayService);
+  wishListService = inject(WishListService);
 
   dataList = input.required<any[]>();
   imageList = signal<any[]>([]);
   pagination = input(false);
+
+  inWishlist = signal<boolean[]>([]);
 
   page = input(0);
 
@@ -48,7 +54,7 @@ export class CarsTable {
       }
 
       this.cargarImagenes(data);
-      console.log(this.imageList());
+      this.checkeoWishList();
     });
   }
 
@@ -63,5 +69,44 @@ export class CarsTable {
     }
     this.imageList.set(lista_temporal);
   }
+
+  anadirWishList(vehicleVin:string){
+    this.wishListService.añadirWishList(vehicleVin)
+    .subscribe({
+      next: exito=>{
+        this.checkeoWishList();
+      },
+      error: err=>{
+        console.error(err);
+      }
+    })
+  }
+
+  eliminarWishList(vehicleVin:string){
+    this.wishListService.eliminarWishList(vehicleVin)
+    .subscribe({
+      next: exito=>{
+        this.checkeoWishList();
+      },
+      error: err=>{
+        console.error(err);
+      }
+    })
+  }
+
+  async checkeoWishList() {
+    this.inWishlist.set([]);
+    for(let vehicle of this.dataList()){
+      let checkar = await this.wishListService.checkeoWishList(vehicle['vin']);
+      if(checkar){
+        this.inWishlist().push(true);
+      }else{
+        this.inWishlist().push(false);
+      }
+    }
+  }
+
+  fullHeart = faHeart;
+  emptyHeart = faHeart2;
 
 }

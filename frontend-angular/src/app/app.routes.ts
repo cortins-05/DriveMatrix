@@ -47,6 +47,13 @@ export const routes: Routes = [
     ]
   },
   {
+    path:'wishlist',
+    loadComponent: ()=>import("./pages/wishlist-page/wishlist-page"),
+    canMatch:[
+      NotAuthenticatedGuard
+    ]
+  },
+  {
     path:'about',
     component:AboutPage
   },

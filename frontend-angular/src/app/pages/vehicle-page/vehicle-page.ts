@@ -8,12 +8,16 @@ import { SwiperCarousel } from '../../shared/components/swiperCarousel/swiperCar
 import { MapBox } from '../../shared/components/mapBox/mapBox';
 import { AuthService } from '../../auth/auth.service';
 import { CartService } from '../../core/services/cart.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import {faHeart as faHeart2} from '@fortawesome/free-regular-svg-icons';
+import { WishListService } from '../../core/services/wishList.service';
 
 const compraURL = "http://localhost:5000/api/purchase/create";
 
 @Component({
   selector: 'app-vehicle-page',
-  imports: [SwiperCarousel,MapBox],
+  imports: [SwiperCarousel,MapBox,FontAwesomeModule],
   templateUrl: './vehicle-page.html',
 })
 export class VehiclePage implements OnInit {
@@ -23,6 +27,7 @@ export class VehiclePage implements OnInit {
   pixabay = inject(PixabayService);
   authService = inject(AuthService);
   cartService = inject(CartService);
+  wishListService = inject(WishListService);
 
   vehicleVin = signal<string>("");
   vehicleData:WritableSignal<Partial<AutoListing>|null> = signal(null) ;
@@ -30,6 +35,8 @@ export class VehiclePage implements OnInit {
 
   venta = signal<boolean|null>(null);
   carrito = signal<boolean|null>(null);
+
+  inWishlist = signal<boolean>(false);
 
   addCart(){
     this.cartService.add({"vehicle_vin":this.vehicleVin(),"cuantity":1});
@@ -91,6 +98,7 @@ export class VehiclePage implements OnInit {
       .subscribe(resp=>{
         this.vehicleImages.set(resp);
       })
+      this.checkeoWishList();
     });
   }
 
@@ -126,6 +134,40 @@ export class VehiclePage implements OnInit {
     },2000);
 
   }
+
+  async checkeoWishList() {
+    let checkar = await this.wishListService.checkeoWishList(this.vehicleVin());
+    if(checkar){
+      this.inWishlist.set(true);
+    }
+  }
+
+  anadirWishList(){
+    this.wishListService.añadirWishList(this.vehicleVin())
+    .subscribe({
+      next: exito=>{
+        this.inWishlist.set(true);
+      },
+      error: err=>{
+        console.error(err);
+      }
+    })
+  }
+
+  eliminarWishList(){
+    this.wishListService.eliminarWishList(this.vehicleVin())
+    .subscribe({
+      next: exito=>{
+        this.inWishlist.set(false);
+      },
+      error: err=>{
+        console.error(err);
+      }
+    })
+  }
+
+  fullHeart = faHeart;
+  emptyHeart = faHeart2;
 
 }
 

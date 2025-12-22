@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { tokenInterface, UserResponse } from './interfaces/auth.interfaces';
+import { CartService } from '../core/services/cart.service';
 
 const loginURL = "http://localhost:5000/api/user/login";
 
@@ -23,6 +24,7 @@ export class AuthService {
   private _token = signal<string|null>(localStorage.getItem('token'));
 
   router = inject(Router);
+  cartService = inject(CartService);
 
   isAuthenticated = signal(false);
 
@@ -116,6 +118,7 @@ export class AuthService {
     this._token.set(null);
     this.isAuthenticated.set(false);
     localStorage.removeItem('token');
+    this.cartService.clear();
     this.router.navigateByUrl('/');
   }
 }
