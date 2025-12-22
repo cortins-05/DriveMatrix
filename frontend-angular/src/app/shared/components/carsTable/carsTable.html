@@ -14,13 +14,15 @@
       </figure>
       <div class="card-body">
         <h2 class="card-title">{{item['make']}} {{item['model']}}
-          <button class="ml-auto">
-            @if (inWishlist()[$index]) {
-              <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
-            }@else {
-              <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
-            }
-          </button>
+          @if(authService.isAuthenticated()){
+            <button class="ml-auto">
+              @if (inWishlist()[$index]) {
+                <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
+              }@else {
+                <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
+              }
+            </button>
+          }
         </h2>
         <p class="font-bold">{{item['transmission']}}, {{item['fuel']}}, {{item['engine']}}, {{item['drivetrain']}}.</p>
         <p class="font-bold text-primary">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>

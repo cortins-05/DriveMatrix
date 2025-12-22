@@ -15,6 +15,8 @@ export class ProfilePage {
 
   formHasError = signal(false);
 
+  profileUpdated = signal<boolean>(false);
+
   updateForm = this.fb.group({
     nombre: [this.authService.user()?.user.nombre,[Validators.required]],
     email: [this.authService.user()?.user.email,[Validators.required,Validators.email]],
@@ -42,6 +44,10 @@ export class ProfilePage {
     actualizar?.subscribe({
       next: (resp)=>{
         this.authService.checkStatus();
+        this.profileUpdated.set(true);
+        setTimeout(()=>{
+          this.profileUpdated.set(false);
+        },2000);
       },
       error: (err)=>{
         console.log(err);

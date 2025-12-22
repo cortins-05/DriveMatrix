@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
 import { firstValueFrom } from 'rxjs';
 
 interface WishList{
@@ -11,7 +10,6 @@ interface WishList{
 export class WishListService {
 
   http = inject(HttpClient);
-  authService = inject(AuthService);
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
