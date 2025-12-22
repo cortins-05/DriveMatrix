@@ -10,7 +10,7 @@ export class ValorationService {
 
   http = inject(HttpClient);
 
-  getValorationVehicleUser(vin:string):Observable<Valoration>{
+  getValorationVehicle(vin:string):Observable<Valoration>{
     return this.http.get<Valoration>(URLallValorationsByVin+vin);
   }
 

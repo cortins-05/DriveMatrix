@@ -1,3 +1,7 @@
-@for(item of wishList();track $index){
-  <p>{{item}}</p>
+@if (wishList().length == 0) {
+  <h1 class="text-3xl font-bold text-primary font-montserrat-md no-select">Tu lista de deseos esta vacia, empieza a añadir ahora mismo!!<span class="text-7xl text-secondary" ><fa-icon [icon]="caraTriste" /></span></h1>
+}@else {
+  @for(item of wishList();track $index){
+    <p>{{item}}</p>
+  }
 }

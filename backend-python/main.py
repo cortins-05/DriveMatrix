@@ -190,6 +190,7 @@ def add_user():
         "password": password_hash,
         "purchases_history": [],
         "wishlist": [],
+        "valorations": [],
         "created_at": datetime.now()
     }
 
@@ -500,6 +501,23 @@ def create_valoration(current_user):
     try:
         result = valorations_user_product_collection.insert_one(valoration_doc)
         valoration_doc["_id"] = str(result.inserted_id)
+        # Agregar también la valoración al documento del usuario (lista "valorations")
+        try:
+            users_collection.update_one(
+                {"_id": current_user["_id"]},
+                {"$push": {
+                    "valorations": {
+                        "valoration_id": str(result.inserted_id),
+                        "vehicle_vin": str(vehicle_vin),
+                        "rating": rating,
+                        "comment": comment,
+                        "created_at": valoration_doc["created_at"],
+                        "updated_at": valoration_doc["updated_at"]
+                    }
+                }}
+            )
+        except Exception:
+            logger.exception("Error agregando valoración al usuario")
         return jsonify({"message": "Valoración creada", "valoration": serialize(valoration_doc)}), 201
     except Exception:
         logger.exception("Error creando valoración")
@@ -593,6 +611,21 @@ def update_valoration(current_user, valoration_id):
     if result.matched_count == 0:
         return error_response("Valoración no encontrada", 404)
 
+    # Sincronizar la entrada en el array "valorations" del usuario
+    try:
+        user_set = {"valorations.$.updated_at": update_fields["updated_at"]}
+        if "rating" in update_fields:
+            user_set["valorations.$.rating"] = update_fields["rating"]
+        if "comment" in update_fields:
+            user_set["valorations.$.comment"] = update_fields["comment"]
+
+        users_collection.update_one(
+            {"_id": current_user["_id"], "valorations.valoration_id": str(obj_id)},
+            {"$set": user_set}
+        )
+    except Exception:
+        logger.exception("Error sincronizando actualización de valoración en usuario")
+
     return jsonify({"message": "Valoración actualizada correctamente"}), 200
 
 
@@ -622,6 +655,15 @@ def delete_valoration(current_user, valoration_id):
 
     if result.deleted_count == 0:
         return error_response("Valoración no encontrada", 404)
+
+    # Sincronizar eliminación en el array "valorations" del usuario
+    try:
+        users_collection.update_one(
+            {"_id": current_user["_id"]},
+            {"$pull": {"valorations": {"valoration_id": str(obj_id)}}}
+        )
+    except Exception:
+        logger.exception("Error sincronizando eliminación de valoración en usuario")
 
     return jsonify({"message": "Valoración eliminada correctamente"}), 200
 

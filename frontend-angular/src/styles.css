@@ -19,6 +19,11 @@
   --swiper-pagination-bullet-inactive-opacity: 0.7;
 }
 
+@layer utilities {
+  .no-select {
+    user-select: none;
+  }
+}
 
 *{
   scrollbar-width: none;

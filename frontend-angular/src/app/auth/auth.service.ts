@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { tokenInterface, UserResponse } from './interfaces/auth.interfaces';
+import { Observable, of } from 'rxjs';
+import { tokenInterface, User, UserResponse } from './interfaces/auth.interfaces';
 import { CartService } from '../core/services/cart.service';
 
 const loginURL = "http://localhost:5000/api/user/login";
@@ -110,6 +110,15 @@ export class AuthService {
         this.isAuthenticated.set(false);
       }
     });
+  }
+
+  showUser(idOrEmail:string){
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    }
+    return this.http.post<User>('http://localhost:5000/api/user/show',{ "emailOrId": idOrEmail },httpOptions);
   }
 
   logout(){

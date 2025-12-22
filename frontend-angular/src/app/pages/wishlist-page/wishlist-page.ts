@@ -1,16 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
 import { WishListService } from '../../core/services/wishList.service';
-import { JsonPipe } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faSadCry } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-wishlist-page',
-  imports: [],
+  imports: [FontAwesomeModule],
   templateUrl: './wishlist-page.html',
 })
 export class WishlistPage {
   wishListService = inject(WishListService);
 
-  wishList = signal<any>([]);
+  wishList = signal<any[]>([]);
 
   constructor(){
     this.wishListService.obtenerWishList()
@@ -23,6 +24,9 @@ export class WishlistPage {
       }
     })
   }
+
+  caraTriste = faSadCry;
+
 }
 
 export default WishlistPage;

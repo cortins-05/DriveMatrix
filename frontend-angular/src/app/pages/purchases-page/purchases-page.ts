@@ -4,18 +4,17 @@ import { AuthService } from '../../auth/auth.service';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
 import { PixabayService } from '../../core/services/pixabay.service';
 import { DatePipe } from '@angular/common';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ValorationService } from '../../core/services/valoration.service';
 import { map } from 'rxjs';
+import { Valoration } from '../../shared/components/valoration/valoration';
 
 const purchasesURL = 'http://localhost:5000/api/purchase/show';
 const valorationURL = 'http://localhost:5000/api/valoration/create';
 
 @Component({
   selector: 'app-purchases-page',
-  imports: [DatePipe, FontAwesomeModule, ReactiveFormsModule],
+  imports: [DatePipe, ReactiveFormsModule,Valoration],
   templateUrl: './purchases-page.html',
 })
 export class PurchasesPage {
@@ -30,14 +29,7 @@ export class PurchasesPage {
   imageList = signal<string[]>([]);
   user_id = signal(this.authService.user()?.user._id);
 
-  form: FormGroup;
-  valoracion = signal<boolean | null>(null);
-
   constructor() {
-    this.form = this.fb.group({
-      rating: [null],
-      comment: [''],
-    });
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -83,49 +75,6 @@ export class PurchasesPage {
       });
   }
 
-  submit(vin: string) {
-    const { rating, comment } = this.form.value;
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      this.authService.logout();
-      this.authService.isAuthenticated.set(false);
-      return;
-    }
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: token,
-      }),
-    };
-
-    const body = {
-      vehicle_vin: vin,
-      rating,
-      comment,
-    };
-
-    this.http.post(valorationURL, body, httpOptions).subscribe({
-      next: () => {
-        this.valoracion.set(true);
-        this.purchases.update(list =>
-          list.map(item =>
-            item.vehicle.vin === vin
-              ? { ...item, rated: true }
-              : item
-          )
-        );
-        setTimeout(() => this.valoracion.set(null), 2000);
-      },
-      error: () => {
-        this.valoracion.set(false);
-        setTimeout(() => this.valoracion.set(null), 2000);
-      },
-    });
-
-  }
-
   getVehicleByVin(vin: string) {
     const url = 'http://localhost:5000/api/auto/listings/filter';
     return this.http.get<AutoListing[]>(url, { params: { vin } });
@@ -144,7 +93,7 @@ export class PurchasesPage {
 
   getValorationByUser(vehicle: AutoListing) {
     return this.valorationService
-    .getValorationVehicleUser(
+    .getValorationVehicle(
       vehicle.vin!
     )
     .pipe(
@@ -156,8 +105,6 @@ export class PurchasesPage {
       }))
     );
   }
-
-  arrowDown = faArrowDown;
 }
 
 export default PurchasesPage;

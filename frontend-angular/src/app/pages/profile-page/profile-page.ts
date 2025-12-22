@@ -1,25 +1,34 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faAddressCard, faKey, faPerson } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../auth/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Valoration } from '../../shared/components/valoration/valoration';
 
 @Component({
   selector: 'app-profile-page',
-  imports: [FontAwesomeModule,ReactiveFormsModule],
+  imports: [FontAwesomeModule,ReactiveFormsModule,Valoration],
   templateUrl: './profile-page.html',
 })
 export class ProfilePage {
   authService = inject(AuthService);
   fb = inject(FormBuilder);
 
+  user = signal(this.authService.user()?.user);
+
+  constructor(){
+    effect(()=>{
+      this.user.set(this.authService.user()?.user);
+    })
+  }
+
   formHasError = signal(false);
 
   profileUpdated = signal<boolean>(false);
 
   updateForm = this.fb.group({
-    nombre: [this.authService.user()?.user.nombre,[Validators.required]],
-    email: [this.authService.user()?.user.email,[Validators.required,Validators.email]],
+    nombre: [this.user()!.nombre,[Validators.required]],
+    email: [this.user()!.email,[Validators.required,Validators.email]],
     pass: ['',[Validators.minLength(6)]]
   });
 
@@ -37,9 +46,9 @@ export class ProfilePage {
     let pass = this.updateForm.value.pass!;
     let actualizar;
     if(pass==''){
-      actualizar = this.authService.updateProfile(this.authService.user()?.user._id!,nombre,email,null);
+      actualizar = this.authService.updateProfile(this.user()!._id!,nombre,email,null);
     }else{
-      actualizar = this.authService.updateProfile(this.authService.user()?.user._id!,nombre,email,pass);
+      actualizar = this.authService.updateProfile(this.user()!._id!,nombre,email,pass);
     }
     actualizar?.subscribe({
       next: (resp)=>{

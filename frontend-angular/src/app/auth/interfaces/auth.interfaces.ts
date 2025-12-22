@@ -1,3 +1,5 @@
+import { Valoration, ValorationElement } from "./valoration.interface";
+
 export interface tokenInterface{
   token:string
 }
@@ -14,4 +16,5 @@ export interface User {
   nombre:            string;
   purchases_history: any[];
   wishlist:          any[];
+  valorations:       ValorationElement[];
 }

@@ -12,12 +12,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import {faHeart as faHeart2} from '@fortawesome/free-regular-svg-icons';
 import { WishListService } from '../../core/services/wishList.service';
+import { ValorationService } from '../../core/services/valoration.service';
+import { Valoration } from '../../shared/components/valoration/valoration';
+import { ValorationElement } from '../../auth/interfaces/valoration.interface';
 
 const compraURL = "http://localhost:5000/api/purchase/create";
 
 @Component({
   selector: 'app-vehicle-page',
-  imports: [SwiperCarousel,MapBox,FontAwesomeModule],
+  imports: [SwiperCarousel,MapBox,FontAwesomeModule,Valoration],
   templateUrl: './vehicle-page.html',
 })
 export class VehiclePage implements OnInit {
@@ -28,6 +31,7 @@ export class VehiclePage implements OnInit {
   authService = inject(AuthService);
   cartService = inject(CartService);
   wishListService = inject(WishListService);
+  valorationService = inject(ValorationService);
 
   vehicleVin = signal<string>("");
   vehicleData:WritableSignal<Partial<AutoListing>|null> = signal(null) ;
@@ -37,6 +41,8 @@ export class VehiclePage implements OnInit {
   carrito = signal<boolean|null>(null);
 
   inWishlist = signal<boolean>(false);
+
+  valorations = signal<ValorationElement[]|null>(null);
 
   addCart(){
     this.cartService.add({"vehicle_vin":this.vehicleVin(),"cuantity":1});
@@ -99,6 +105,7 @@ export class VehiclePage implements OnInit {
         this.vehicleImages.set(resp);
       })
       this.checkeoWishList();
+      this.getAllValoration();
     });
   }
 
@@ -162,6 +169,15 @@ export class VehiclePage implements OnInit {
       },
       error: err=>{
         console.error(err);
+      }
+    })
+  }
+
+  getAllValoration(){
+    this.valorationService.getValorationVehicle(this.vehicleVin())
+    .subscribe({
+      next: valoraciones => {
+        this.valorations.set(valoraciones.valorations);
       }
     })
   }

@@ -33,14 +33,18 @@
     </div>
   </div>
 
-  <div class="flex-1 min-h-0 overflow-y-auto border-t">
-    <cars-table-component [dataList]="dataList()" [pagination]="true" [page]="paginaActual()"/>
-  </div>
+  @if (dataList().length>0) {
+    <div class="flex-1 min-h-0 overflow-y-auto border-t">
+      <cars-table-component [dataList]="dataList()" [pagination]="true" [page]="paginaActual()"/>
+    </div>
 
-  @if(buscado()){
     <div class="join grid grid-cols-2 p-2 border-t shrink-0">
       <button class="join-item btn btn-primary" (click)="previousPage()">Previous page</button>
       <button class="join-item btn btn-secondary" (click)="nextPage()" >Next</button>
     </div>
+  }@else if(buscado()) {
+    <h1 class="text-error font-bold text-2xl mt-20 no-select">No hay resultados.</h1>
+  }@else {
+    <h1 class="text-primary font-bold text-2xl mt-20 no-select">Busca entre varios productos con todos los filtros de los que disponemos!!</h1>
   }
 </div>

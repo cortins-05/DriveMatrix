@@ -8,6 +8,7 @@ export interface Valoration {
 }
 
 export interface ValorationElement {
+  valoration_id?: string,
   _id:         string;
   comment:     string;
   created_at:  Date;

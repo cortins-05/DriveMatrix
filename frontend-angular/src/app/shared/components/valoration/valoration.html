@@ -1,0 +1,148 @@
+<form [formGroup]="form" (ngSubmit)="submit(vehicle_vin())">
+  @if (tipe()==1) {
+    <details class="collapse rounded-none">
+      <summary class="collapse-title font-bold text-primary text-xl">
+        Valorar <fa-icon [icon]="arrowDown" />
+      </summary>
+
+      <div class="collapse-content text-sm bg-base-100 border border-base-300 pt-3 flex flex-col gap-5">
+
+        <div>
+          <span class="font-bold">Puntuación:</span>
+          <div class="rating rating-lg">
+            <input type="radio" class="rating-hidden" />
+
+            <input type="radio" class="mask mask-star-2"
+                  value="1" formControlName="rating" />
+            <input type="radio" class="mask mask-star-2"
+                  value="2" formControlName="rating" />
+            <input type="radio" class="mask mask-star-2"
+                  value="3" formControlName="rating" />
+            <input type="radio" class="mask mask-star-2"
+                  value="4" formControlName="rating" />
+            <input type="radio" class="mask mask-star-2"
+                  value="5" formControlName="rating" />
+          </div>
+        </div>
+
+        <div class="flex justify-between items-end">
+          <textarea
+            class="textarea resize-none w-1/2"
+            placeholder="Comentario (opcional)"
+            formControlName="comment">
+          </textarea>
+
+          <button type="submit" class="btn btn-primary">
+            Publicar
+          </button>
+        </div>
+
+      </div>
+    </details>
+  }
+  @if(tipe()==2){
+    <div class="flex flex-col gap-7 bg-primary-content p-2 rounded-xl text-base-content">
+      <div class="flex gap-3">
+        <h1 class="font-bold">{{vehicle_info()?.make}} {{vehicle_info()?.model}}</h1>
+        <div class="rating rating-lg">
+          <input type="radio" class="rating-hidden" />
+
+          <input type="radio"
+                class="mask mask-star-2"
+                value="1"
+                formControlName="rating" />
+
+          <input type="radio"
+                class="mask mask-star-2"
+                value="2"
+                formControlName="rating" />
+
+          <input type="radio"
+                class="mask mask-star-2"
+                value="3"
+                formControlName="rating" />
+
+          <input type="radio"
+                class="mask mask-star-2"
+                value="4"
+                formControlName="rating" />
+
+          <input type="radio"
+                class="mask mask-star-2"
+                value="5"
+                formControlName="rating" />
+        </div>
+      </div>
+      <div class="flex justify-between items-end gap-5">
+        <textarea
+          class="textarea resize-none"
+          formControlName="comment"
+        >
+        </textarea>
+
+        <button type="submit" class="btn btn-primary">
+          Actualizar
+        </button>
+      </div>
+    </div>
+  }
+  @if(tipe()==3){
+    <div class="flex flex-col gap-7 bg-base-300 p-2 rounded-xl text-base-content">
+      <div class="flex gap-3">
+        <div class="flex flex-col">
+          <h1 class="text-xl font-bold"> {{user()?.nombre}} </h1>
+          <h1 class="text-primary"> {{user()?.email}} </h1>
+        </div>
+        <div class="w-full flex justify-end items-baseline">
+          <h1 class="font-bold">{{user_valoration()?.comment}}</h1>
+          <div class="rating rating-lg">
+            <input type="radio" class="rating-hidden" />
+
+            <input type="radio"
+                  class="mask mask-star-2"
+                  value="1"
+                  formControlName="rating" />
+
+            <input type="radio"
+                  class="mask mask-star-2"
+                  value="2"
+                  formControlName="rating" />
+
+            <input type="radio"
+                  class="mask mask-star-2"
+                  value="3"
+                  formControlName="rating" />
+
+            <input type="radio"
+                  class="mask mask-star-2"
+                  value="4"
+                  formControlName="rating" />
+
+            <input type="radio"
+                  class="mask mask-star-2"
+                  value="5"
+                  formControlName="rating" />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</form>
+@if(valoracion()!=null){
+  @if(valoracion()){
+    <div role="alert" class="absolute bottom-5 right-5 alert alert-success">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Valoracion Realizada!</span>
+    </div>
+  }
+  @else {
+    <div role="alert" class="absolute bottom-5 right-5 alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Error! No se ha realizado la valoracion.</span>
+    </div>
+  }
+}
