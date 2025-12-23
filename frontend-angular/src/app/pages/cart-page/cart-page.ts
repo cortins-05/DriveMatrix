@@ -66,6 +66,8 @@ export class CartPage {
         }
       })
 
+      this.limpiar();
+
       setTimeout(()=>{
         this.venta.set(null);
       },2000);
@@ -74,6 +76,8 @@ export class CartPage {
 
   limpiar(){
     this.cartService.clear();
+    this.carrito = this.cartService.getCart();
+    this.productos.set([]);
   }
 
   remove(itemVin:string){
