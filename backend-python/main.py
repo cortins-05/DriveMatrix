@@ -12,6 +12,10 @@ import re
 import jwt
 from functools import wraps
 import logging
+import signal
+import subprocess
+from pathlib import Path
+import sys
 
 app = Flask(__name__)
 CORS(app,resources={r"/api/*": {"origins": "http://localhost:4200"}})
@@ -25,7 +29,7 @@ logger = logging.getLogger("drivematrix")
 # ----------------------------
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:1234@mongo:27017/")
 DB_NAME = "DriveMatrix"
-API_KEY = "sk_ad_YCDC78ICh3FxEstsjmxrnxAx"
+AUTODEV_API_KEY = os.getenv("AUTODEV_API_KEY")
 app.config["SECRET_KEY"] = os.getenv("JWT_SECRET", "una_clave_muy_segura_y_larga")
 
 # ----------------------------
@@ -786,7 +790,7 @@ def listings_vehicles():
     url = "https://api.auto.dev/listings?limit=9999"
 
     headers = {
-        'Authorization': f'Bearer {API_KEY}',
+        'Authorization': f'Bearer {AUTODEV_API_KEY}',
         'Content-Type': 'application/json'
     }
 
@@ -823,7 +827,7 @@ def show_auto_image(vin):
     url = f"https://api.auto.dev/photos/{vin}"
 
     headers = {
-        'Authorization': f'Bearer {API_KEY}',
+        'Authorization': f'Bearer {AUTODEV_API_KEY}',
         'Content-Type': 'application/json'
     }
 
@@ -849,6 +853,11 @@ def catch_all(todo):
 # ----------------------------
 # INICIALIZACIÓN
 # ----------------------------
+
+def start_backend():
+    print("▶ Arrancando backend...")
+    app.run(host="0.0.0.0", port=5000)
+
 if __name__ == "__main__":
-    print("Backend corriendo en puerto 5000.")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    from generate_environment import *
+    start_backend()

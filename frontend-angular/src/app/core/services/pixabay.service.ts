@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { map } from 'rxjs';
+import {environment} from '../../../environments/environment';
 
-const API_KEY = "53738006-e3a16a287bce2af1a189a48e1";
+const API_KEY = environment.pixabayApiKey;
 
 @Injectable({providedIn: 'root'})
 export class PixabayService {

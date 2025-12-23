@@ -7,8 +7,11 @@
       <ul
         tabindex="-1"
         class="menu menu-sm dropdown-content bg-base-200 mt-3 w-40 p-5 shadow font-bold ml-0">
-        <enlace-hover nombre="Catalog"/>
-        <enlace-hover nombre="About"/>
+        <enlace-hover nombre="Catalog" routerLink="/catalog" [queryParams]="{page: catalogPage()}"/>
+        <enlace-hover nombre="Search" routerLink="/search">
+          <fa-icon [icon]="lupa" class="cursor-pointer items-center justify-center flex"/>
+        </enlace-hover>
+        <enlace-hover nombre="About" routerLink="/about"/>
         <button class="btn btn-xs btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()">
           @if(current_theme()=="luxury"){
             <fa-icon [icon]="faMoon"/>

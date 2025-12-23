@@ -5,7 +5,6 @@ import { EnlaceHover } from '../../../shared/components/enlaceHover/enlaceHover'
 import { RouterLink } from "@angular/router";
 import { QueryParamService } from '../../services/queryParam.service';
 import { AuthService } from '../../../auth/auth.service';
-import { AuthPage } from '../../../auth/auth-page/auth-page';
 import { TitleCasePipe } from '@angular/common';
 
 @Component({

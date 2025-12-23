@@ -1,512 +1,254 @@
 # 🚗 DriveMatrix
 
-<div align="center">
-
-**Plataforma moderna de comercio electrónico para vehículos**
-
-![Angular](https://img.shields.io/badge/Angular-20.3-DD0031?style=for-the-badge&logo=angular&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-8.2-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)
-
-</div>
+Plataforma moderna de comercio electrónico para vehículos con frontend en Angular y backend en Flask, persistencia en MongoDB y orquestación opcional con Docker Compose. Este README explica la arquitectura, requisitos, configuración de variables de entorno y cómo poner todo en marcha sin exponer ninguna clave privada.
 
 ---
 
-## 📋 Tabla de Contenidos
+## Índice
 
-- [Descripción](#-descripción)
-- [Características](#-características)
-- [Tecnologías](#️-tecnologías)
-- [Arquitectura](#-arquitectura)
-- [Requisitos Previos](#-requisitos-previos)
-- [Instalación](#-instalación)
-- [Configuración](#️-configuración)
-- [Uso](#-uso)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [API Endpoints](#-api-endpoints)
-- [Contribuir](#-contribuir)
-- [Licencia](#-licencia)
-
----
-
-## 🎯 Descripción
-
-**DriveMatrix** es una plataforma completa de comercio electrónico especializada en la compra y venta de vehículos. Ofrece una experiencia de usuario moderna e intuitiva con funcionalidades avanzadas como búsqueda inteligente, carrito de compras, lista de deseos, sistema de valoraciones y visualización geográfica mediante mapas interactivos.
-
-### ✨ Características Principales
-
-- 🔐 **Autenticación y Autorización**: Sistema completo de registro, login y gestión de sesiones con JWT
-- 🚙 **Catálogo de Vehículos**: Búsqueda y filtrado avanzado de vehículos con múltiples criterios
-- 🛒 **Carrito de Compras**: Gestión de vehículos seleccionados para compra
-- ❤️ **Lista de Deseos**: Guarda tus vehículos favoritos para consultarlos después
-- ⭐ **Sistema de Valoraciones**: Califica y revisa vehículos (un voto por usuario por vehículo)
-- 📍 **Mapas Interactivos**: Visualización de ubicación de vehículos con MapBox
-- 📱 **Diseño Responsive**: Interfaz adaptativa con TailwindCSS
-- 🖼️ **Galería de Imágenes**: Integración con Pixabay para imágenes de vehículos
-- 📊 **Panel de Usuario**: Gestión de perfil, historial de compras y más
-- 🎨 **UI Moderna**: Componentes reutilizables con Swiper para carruseles
+- Descripción general
+- Características
+- Arquitectura
+- Tecnologías
+- Requisitos
+- Configuración y variables
+- Puesta en marcha (Docker y local)
+- Estructura del proyecto
+- API (resumen práctico)
+- Seguridad y buenas prácticas
+- Problemas comunes (Troubleshooting)
 
 ---
 
-## 🛠️ Tecnologías
+## Descripción general
 
-### Frontend
-- **Framework**: Angular 20.3
-- **Lenguaje**: TypeScript 5.0
-- **Estilos**: TailwindCSS 4.1
-- **Mapas**: MapBox GL 3.17
-- **Carruseles**: Swiper 12.0
-- **Iconos**: FontAwesome 7.1
-- **Gestión de Estado**: RxJS 7.8
+DriveMatrix es una plataforma de e‑commerce orientada a catálogo de vehículos: búsqueda y filtrado, ficha de vehículo, carrito, lista de deseos, compras, perfil de usuario y valoraciones. El frontend consume una API REST en Flask que gestiona autenticación JWT, compras y operaciones con MongoDB.
 
-### Backend
-- **Framework**: Flask (Python)
-- **Base de Datos**: MongoDB 8.2
-- **Autenticación**: JWT (PyJWT)
-- **Hashing**: bcrypt
-- **CORS**: Flask-CORS
+### Características
 
-### DevOps & Herramientas
-- **Containerización**: Docker & Docker Compose
-- **Gestión de Paquetes**: npm, pip
-- **Administración BD**: Mongo Express
+- Autenticación JWT y validación de sesión.
+- Catálogo y ficha de vehículos con imágenes y mapas.
+- Carrito y lista de deseos por usuario.
+- Historial de compras.
+- Valoraciones por usuario y por vehículo (índice único).
+- Integraciones externas: Mapbox (geocodificación inversa) y Pixabay (imágenes).
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
-```
-┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
-│                 │         │                 │         │                 │
-│  Angular App    │────────▶│   Flask API     │────────▶│    MongoDB      │
-│  (Puerto 4200)  │  HTTP   │  (Puerto 5000)  │   DB    │  (Puerto 27017) │
-│                 │         │                 │         │                 │
-└─────────────────┘         └─────────────────┘         └─────────────────┘
-        │                            │                           │
-        │                            │                           │
-        ▼                            ▼                           ▼
-  TailwindCSS              JWT Auth + CORS            Mongo Express (8081)
-  MapBox GL                  bcrypt                    
-  Swiper                   PyMongo                    
+Frontend Angular (puerto 4200) ↔ API Flask (puerto 5000) ↔ MongoDB (puerto 27017)
+
+- CORS del backend permite origen `http://localhost:4200`.
+- Mongo Express opcional para administración en `http://localhost:8081`.
+
+---
+
+## Tecnologías
+
+- Frontend: Angular 20, TypeScript, RxJS, TailwindCSS, Mapbox GL, Swiper, FontAwesome.
+- Backend: Flask, PyMongo, PyJWT, bcrypt, Flask‑CORS.
+- Base de datos: MongoDB.
+- DevOps: Docker y Docker Compose (servicios: mongo, mongo‑express, backend).
+
+---
+
+## Requisitos
+
+- Node.js 18+ y npm.
+- Python 3.11+ y pip.
+- Docker y Docker Compose (opcional, recomendado para backend y DB).
+
+---
+
+## Configuración y variables
+
+Nunca incluyas claves privadas en el repositorio. Define las variables de entorno de forma local o en tu sistema CI/CD.
+
+### Backend (Flask)
+
+Variables usadas por [backend-python/main.py](backend-python/main.py):
+
+- `MONGO_URI`: cadena de conexión a MongoDB. Ejemplo en Docker: `mongodb://admin:1234@mongo:27017/`.
+- `JWT_SECRET`: clave para firmar tokens JWT.
+- `AUTODEV_API_KEY` (opcional, si aplicase).
+- `PIXABAY_API_KEY` (si el backend la necesitara).
+- `MAPBOX_API_KEY` (si el backend la necesitara).
+
+En Docker, el servicio `backend` hereda variables desde el archivo `.env` del directorio [docker](docker/docker-compose.yml). Puedes definir:
+
+```env
+MONGO_ROOT_USER=admin
+MONGO_ROOT_PASSWORD=1234
+MONGO_URI=mongodb://admin:1234@mongo:27017/
+JWT_SECRET=una_clave_muy_segura_y_larga
 ```
 
-**Flujo de Datos:**
-1. El usuario interactúa con la interfaz Angular
-2. Las peticiones HTTP se envían al backend Flask
-3. Flask valida tokens JWT y procesa la lógica de negocio
-4. MongoDB almacena y recupera datos
-5. Las respuestas JSON se devuelven al frontend
-6. Angular actualiza la UI de forma reactiva
+### Frontend (Angular)
 
----
+Los servicios consumen claves mediante `process.env`:
 
-## 📦 Requisitos Previos
+- `MAPBOX_API_KEY` en [frontend-angular/src/app/core/services/mapBox.service.ts](frontend-angular/src/app/core/services/mapBox.service.ts).
+- `PIXABAY_API_KEY` en [frontend-angular/src/app/core/services/pixabay.service.ts](frontend-angular/src/app/core/services/pixabay.service.ts).
 
-Antes de comenzar, asegúrate de tener instalado:
+Para desarrollo en Windows (PowerShell), define las variables en la misma sesión antes de arrancar Angular:
 
-- **Node.js** (v18 o superior) y **npm**
-- **Python** (v3.11 o superior) y **pip**
-- **Docker** y **Docker Compose**
-- **Git**
+```powershell
+$env:MAPBOX_API_KEY="TU_MAPBOX_KEY"; $env:PIXABAY_API_KEY="TU_PIXABAY_KEY"; npm start
+```
 
----
+En Linux/macOS (bash):
 
-## 🚀 Instalación
-
-### Opción 1: Usando Docker (Recomendado)
-
-1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/DriveMatrix.git
-cd DriveMatrix
+MAPBOX_API_KEY=TU_MAPBOX_KEY PIXABAY_API_KEY=TU_PIXABAY_KEY npm start
 ```
 
-2. **Iniciar los servicios con Docker Compose**
+Si deseas fijarlas permanentemente, usa un gestor seguro de secretos o un `.env` fuera del control de versiones y configura tu entorno para inyectarlas al proceso de build.
+
+---
+
+## Puesta en marcha
+
+### Opción A: Con Docker (recomendado para backend y DB)
+
+1) Arranca la base de datos y el backend:
+
 ```bash
 cd docker
 docker-compose up -d
 ```
 
-Esto iniciará:
-- MongoDB en `localhost:27017`
-- Mongo Express en `localhost:8081`
-- Backend Flask en `localhost:5000`
+Esto levanta:
 
-3. **Instalar dependencias del frontend**
+- MongoDB en `localhost:27017`.
+- Mongo Express en `http://localhost:8081`.
+- Backend Flask en `http://localhost:5000`.
+
+2) Instala y ejecuta el frontend:
+
 ```bash
 cd ../frontend-angular
 npm install
-```
-
-4. **Iniciar el servidor de desarrollo de Angular**
-```bash
+# Define tus variables (ver sección de frontend)
 npm start
 ```
 
-La aplicación estará disponible en `http://localhost:4200`
+La app web estará en `http://localhost:4200`.
 
-### Opción 2: Instalación Manual
+### Opción B: Local sin Docker
 
-#### Backend
+Backend:
 
-1. **Navegar al directorio del backend**
 ```bash
 cd backend-python
-```
-
-2. **Crear entorno virtual** (opcional pero recomendado)
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
-
-3. **Instalar dependencias**
-```bash
 pip install -r requirements.txt
+# Exporta variables de entorno, por ejemplo:
+# Windows PowerShell
+$env:MONGO_URI="mongodb://localhost:27017/"; $env:JWT_SECRET="clave_super_segura"; python main.py
 ```
 
-4. **Configurar variables de entorno**
-```bash
-# Crear archivo .env
-MONGO_URI=mongodb://admin:1234@localhost:27017/
-JWT_SECRET=tu_clave_secreta_super_segura
-```
+Frontend:
 
-5. **Ejecutar el servidor**
-```bash
-python main.py
-```
-
-#### Frontend
-
-1. **Navegar al directorio del frontend**
 ```bash
 cd frontend-angular
-```
-
-2. **Instalar dependencias**
-```bash
 npm install
-```
+# Define MAPBOX_API_KEY y PIXABAY_API_KEY (ver arriba)
 
-3. **Iniciar servidor de desarrollo**
-```bash
-npm start
 ```
 
 ---
 
-## ⚙️ Configuración
+## Estructura del proyecto
 
-### Variables de Entorno
+Ver carpetas y archivos principales:
 
-**Backend** (`backend-python/.env`):
-```env
-MONGO_URI=mongodb://admin:1234@mongo:27017/
-JWT_SECRET=una_clave_muy_segura_y_larga
-```
-
-**MongoDB** (docker-compose.yml):
-```yaml
-MONGO_INITDB_ROOT_USERNAME=admin
-MONGO_INITDB_ROOT_PASSWORD=1234
-```
-
-### Puertos por Defecto
-
-| Servicio | Puerto | URL |
-|----------|--------|-----|
-| Frontend (Angular) | 4200 | http://localhost:4200 |
-| Backend (Flask) | 5000 | http://localhost:5000 |
-| MongoDB | 27017 | mongodb://localhost:27017 |
-| Mongo Express | 8081 | http://localhost:8081 |
+- Backend: [backend-python/main.py](backend-python/main.py), [backend-python/interfaces.py](backend-python/interfaces.py), [backend-python/requirements.txt](backend-python/requirements.txt), [backend-python/dockerfile](backend-python/dockerfile).
+- Frontend: configuración en [frontend-angular/angular.json](frontend-angular/angular.json), scripts en [frontend-angular/package.json](frontend-angular/package.json) y bootstrap en [frontend-angular/src/main.ts](frontend-angular/src/main.ts).
+- Docker: [docker/docker-compose.yml](docker/docker-compose.yml).
 
 ---
 
-## 💻 Uso
+## API (resumen práctico)
 
-### Comandos Disponibles
+El backend expone endpoints bajo `/api`. Algunos relevantes definidos en [backend-python/main.py](backend-python/main.py):
 
-#### Frontend
+- Salud de la API: `GET /` → "API WORKS!!!".
+- Documentación local: `GET /api` → sirve guía rápida HTML del backend.
+
+Autenticación y usuarios:
+
+- `POST /api/user/create` → registro (nombre, email, password).
+- `POST /api/user/login` → login (email, password) y devuelve JWT.
+- `GET /api/user/checkToken` → valida JWT (header `Authorization: Bearer <token>`).
+- `POST /api/user/show` → muestra usuario por `emailOrId`.
+- `PATCH /api/user/update/<user_id>` → actualiza usuario (requiere JWT).
+- `DELETE /api/user/delete` → elimina usuario autenticado.
+
+Compras:
+
+- `POST /api/purchase/create` → crea compra (vehículo por VIN, requiere JWT).
+- `GET /api/purchase/show` → lista compras del usuario (requiere JWT).
+
+Wishlist (extracto):
+
+- `POST /api/user/wishlist/add` → añade por VIN (requiere JWT).
+
+Nota: hay más rutas relacionadas con vehículos y valoraciones; consulta `GET /api` para la guía HTML incluida.
+
+Ejemplo de login:
+
 ```bash
-npm start          # Inicia el servidor de desarrollo
-npm run build      # Compila la aplicación para producción
-npm run watch      # Compila en modo desarrollo con hot-reload
-npm test           # Ejecuta las pruebas unitarias
-```
-
-#### Backend
-```bash
-python main.py     # Inicia el servidor Flask
-```
-
-#### Docker
-```bash
-docker-compose up -d              # Inicia todos los servicios en segundo plano
-docker-compose down               # Detiene todos los servicios
-docker-compose logs -f backend    # Ver logs del backend
-docker-compose restart backend    # Reinicia el backend
-```
-
-### Flujo de Usuario Típico
-
-1. **Registro/Login**: Accede a `/login` para crear una cuenta o iniciar sesión
-2. **Explorar Catálogo**: Navega a `/catalog` para ver todos los vehículos disponibles
-3. **Buscar Vehículo**: Usa `/search` para filtrar por criterios específicos
-4. **Ver Detalles**: Haz clic en un vehículo para ver su página detallada en `/vehicle`
-5. **Agregar a Carrito/Wishlist**: Guarda vehículos de interés
-6. **Realizar Compra**: Finaliza la compra desde `/cart`
-7. **Revisar Compras**: Ve tu historial en `/purchases`
-8. **Gestionar Perfil**: Actualiza tu información en `/profile`
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-DriveMatrix/
-│
-├── backend-python/                 # Backend Flask API
-│   ├── main.py                     # Punto de entrada del servidor
-│   ├── interfaces.py               # Definiciones de tipos y mapeos
-│   ├── requirements.txt            # Dependencias Python
-│   ├── dockerfile                  # Configuración Docker del backend
-│   └── __pycache__/                # Caché de Python
-│
-├── docker/                         # Configuración Docker
-│   └── docker-compose.yml          # Orquestación de servicios
-│
-├── frontend-angular/               # Aplicación Angular
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── auth/               # Módulo de autenticación
-│   │   │   │   ├── auth.service.ts
-│   │   │   │   ├── auth-page/
-│   │   │   │   ├── guards/         # Guards de rutas
-│   │   │   │   └── interfaces/
-│   │   │   │
-│   │   │   ├── core/               # Servicios y funcionalidades core
-│   │   │   │   ├── interfaces/
-│   │   │   │   ├── layout/         # Componentes de layout (navbar)
-│   │   │   │   └── services/       # Servicios globales
-│   │   │   │       ├── cart.service.ts
-│   │   │   │       ├── mapBox.service.ts
-│   │   │   │       ├── pixabay.service.ts
-│   │   │   │       ├── valoration.service.ts
-│   │   │   │       └── wishList.service.ts
-│   │   │   │
-│   │   │   ├── pages/              # Páginas/Vistas principales
-│   │   │   │   ├── main-page/
-│   │   │   │   ├── catalog-page/
-│   │   │   │   ├── search-page/
-│   │   │   │   ├── vehicle-page/
-│   │   │   │   ├── cart-page/
-│   │   │   │   ├── wishlist-page/
-│   │   │   │   ├── purchases-page/
-│   │   │   │   ├── profile-page/
-│   │   │   │   └── about-page/
-│   │   │   │
-│   │   │   ├── shared/             # Componentes compartidos
-│   │   │   │   └── components/
-│   │   │   │       ├── carsTable/
-│   │   │   │       ├── enlaceHover/
-│   │   │   │       ├── mapBox/
-│   │   │   │       ├── swiperCarousel/
-│   │   │   │       └── valoration/
-│   │   │   │
-│   │   │   ├── app.config.ts       # Configuración de la app
-│   │   │   ├── app.routes.ts       # Definición de rutas
-│   │   │   └── app.ts              # Componente raíz
-│   │   │
-│   │   ├── index.html              # HTML principal
-│   │   ├── main.ts                 # Bootstrap de Angular
-│   │   └── styles.css              # Estilos globales
-│   │
-│   ├── public/                     # Recursos estáticos
-│   │   ├── assets/
-│   │   └── fonts/
-│   │
-│   ├── angular.json                # Configuración de Angular CLI
-│   ├── package.json                # Dependencias frontend
-│   ├── tsconfig.json               # Configuración TypeScript
-│   └── tsconfig.app.json
-│
-├── package.json                    # Dependencias del proyecto raíz
-└── README.md                       # Este archivo
-```
-
----
-
-## 🌐 API Endpoints
-
-### Autenticación
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/user/create` | Registrar nuevo usuario | No |
-| POST | `/api/user/login` | Iniciar sesión | No |
-| GET | `/api/user/checkToken` | Validar token JWT | Sí |
-
-### Usuarios
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| GET | `/api/user/:id` | Obtener usuario por ID | Sí |
-| PUT | `/api/user/:id` | Actualizar usuario | Sí |
-| DELETE | `/api/user/:id` | Eliminar usuario | Sí |
-
-### Vehículos
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| GET | `/api/vehicles` | Listar todos los vehículos | No |
-| GET | `/api/vehicles/:vin` | Obtener vehículo por VIN | No |
-| POST | `/api/vehicles` | Crear nuevo vehículo | Sí |
-| PUT | `/api/vehicles/:vin` | Actualizar vehículo | Sí |
-| DELETE | `/api/vehicles/:vin` | Eliminar vehículo | Sí |
-
-### Valoraciones
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/valorations` | Crear valoración | Sí |
-| GET | `/api/valorations/:vin` | Obtener valoraciones de un vehículo | No |
-
-### Compras
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/purchases` | Registrar compra | Sí |
-| GET | `/api/purchases/user/:userId` | Historial de compras del usuario | Sí |
-
-### Lista de Deseos
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/wishlist/add` | Agregar a lista de deseos | Sí |
-| DELETE | `/api/wishlist/remove` | Quitar de lista de deseos | Sí |
-| GET | `/api/wishlist` | Obtener lista de deseos | Sí |
-
-### Carrito
-
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/cart/add` | Agregar al carrito | Sí |
-| DELETE | `/api/cart/remove` | Quitar del carrito | Sí |
-| GET | `/api/cart` | Obtener carrito | Sí |
-
-**Ejemplo de Request:**
-```bash
-# Login
 curl -X POST http://localhost:5000/api/user/login \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "password": "password123"}'
-
-# Obtener vehículos (con token)
-curl -X GET http://localhost:5000/api/vehicles \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ---
 
-## 🔒 Seguridad
+## Seguridad y buenas prácticas
 
-- **Autenticación JWT**: Tokens con expiración configurable
-- **Bcrypt**: Hash seguro de contraseñas
-- **CORS**: Configurado para permitir solo orígenes autorizados
-- **Guards de Ruta**: Protección de rutas sensibles en Angular
-- **Validación**: Validación de datos tanto en frontend como backend
-- **MongoDB**: Índices únicos para prevenir duplicados (email, user-vehicle ratings)
+- No subir claves privadas al repositorio.
+- Usar `JWT_SECRET` suficientemente largo, aleatorio y rotarlo periódicamente.
+- Limitar CORS a orígenes necesarios (por defecto `http://localhost:4200`).
+- Almacenar contraseñas con bcrypt (ya implementado).
+- Índices únicos en Mongo para emails y valoraciones por usuario/vehículo (ya implementados).
 
 ---
 
-## 🧪 Testing
+## Problemas comunes (Troubleshooting)
+
+- `process.env` en Angular: asegúrate de definir `MAPBOX_API_KEY` y `PIXABAY_API_KEY` en la misma sesión de terminal antes de `npm start`. Si no aparecen, verifica el shell que usas y vuelve a lanzar el comando de inicio.
+- Conexión Mongo en Docker: confirma que `MONGO_URI` apunta a `mongo` (nombre del servicio) dentro de la red de Docker: `mongodb://admin:1234@mongo:27017/`.
+- CORS: si cambias el puerto u origen del frontend, ajusta CORS en [backend-python/main.py](backend-python/main.py).
+
+---
+
+## Comandos útiles
+
+Frontend:
 
 ```bash
-# Frontend
-cd frontend-angular
+npm start
+npm run build
 npm test
+```
 
-# Backend
-cd backend-python
-pytest  # (si se configuran tests)
+Backend:
+
+```bash
+python backend-python/main.py
+```
+
+Docker:
+
+```bash
+cd docker
+docker-compose up -d
+docker-compose down
+docker-compose logs -f backend
 ```
 
 ---
 
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. **Fork** el proyecto
-2. Crea una **rama** para tu feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un **Pull Request**
-
-### Guía de Estilo
-
-- **Frontend**: Seguir las convenciones de Angular y usar Prettier
-- **Backend**: Seguir PEP 8 para Python
-- **Commits**: Usar mensajes descriptivos en español o inglés
-
----
-
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
----
-
-## 👥 Autores
-
-- **Tu Nombre** - *Desarrollo Inicial* - [GitHub](https://github.com/tu-usuario)
-
----
-
-## 🙏 Agradecimientos
-
-- Angular Team por el excelente framework
-- Flask & MongoDB por una combinación robusta de backend
-- MapBox por las herramientas de mapeo
-- Pixabay por el servicio de imágenes
-- TailwindCSS por el sistema de diseño
-
----
-
-## 📞 Contacto
-
-¿Preguntas o sugerencias? Abre un [issue](https://github.com/tu-usuario/DriveMatrix/issues) o contáctanos en contacto@drivematrix.com
-
----
-
-<div align="center">
-
-**⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub! ⭐**
-
-Hecho con ❤️ por el equipo de DriveMatrix
-
-</div>
-
-Guía de despliegue de la app.
-
-## **Necesario**
-
-* Docker Instalado
-* Angular + Dependencias Instaladas
-
-## Pasos
-
-### FrontEnd
-
-1. Acceder a la carpeta `frontend-angular`
-2. Ejecutar `npm install`
-3. `ng serve -o`
-
-### Backend/Docker
-
-1. Acceder a la carpeta `docker`
-2. Ejecutar `docker compose -d`
+Este README resume la configuración sin exponer secretos. Si quieres, puedo añadir plantillas `.env.example` separadas para frontend y backend.
+### Flujo de Usuario Típico

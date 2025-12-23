@@ -15,40 +15,40 @@ export const routes: Routes = [
   },
   {
     path:'profile',
-    loadComponent: ()=>import("./pages/profile-page/profile-page")
+    loadComponent: ()=>import("./pages/profile-page/profile-page").then(m=>m.default)
   },
   {
     path:'catalog',
-    loadComponent: ()=>import("./pages/catalog-page/catalog-page")
+    loadComponent: ()=>import("./pages/catalog-page/catalog-page").then(m=>m.default)
   },
   {
     path:'search',
-    loadComponent: ()=>import("./pages/search-page/search-page")
+    loadComponent: ()=>import("./pages/search-page/search-page").then(m=>m.default)
   },
   {
     path:'vehicle',
-    loadComponent: ()=>import("./pages/vehicle-page/vehicle-page"),
+    loadComponent: ()=>import("./pages/vehicle-page/vehicle-page").then(m=>m.default),
     canMatch:[
       NotAuthenticatedGuard
     ]
   },
   {
     path:'purchases',
-    loadComponent: ()=>import("./pages/purchases-page/purchases-page"),
+    loadComponent: ()=>import("./pages/purchases-page/purchases-page").then(m=>m.default),
     canMatch:[
       NotAuthenticatedGuard
     ]
   },
   {
     path:'cart',
-    loadComponent: ()=>import("./pages/cart-page/cart-page"),
+    loadComponent: ()=>import("./pages/cart-page/cart-page").then(m=>m.default),
     canMatch:[
       NotAuthenticatedGuard
     ]
   },
   {
     path:'wishlist',
-    loadComponent: ()=>import("./pages/wishlist-page/wishlist-page"),
+    loadComponent: ()=>import("./pages/wishlist-page/wishlist-page").then(m=>m.default),
     canMatch:[
       NotAuthenticatedGuard
     ]

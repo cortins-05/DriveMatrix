@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {environment} from '../../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class MapBoxService {
   private http = inject(HttpClient);
-  public accessToken = 'pk.eyJ1IjoiY29ydGlucyIsImEiOiJjbWlmNXZsYncwNGF5M2VxdTlpcDZrbDZzIn0.4AqoIaQOuhjd0iqhx4biZQ';
+  public accessToken = environment.mapboxApiKey;
   private baseUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
 
   reverseGeocode(lng: number, lat: number): Observable<any> {

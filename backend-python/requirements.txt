@@ -1,6 +1,6 @@
 Flask
-flask-cors
-PyMongo
+Flask-Cors
+pymongo
 bcrypt
-requests
 PyJWT
+requests
