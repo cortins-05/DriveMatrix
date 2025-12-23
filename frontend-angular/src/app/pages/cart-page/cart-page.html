@@ -15,9 +15,9 @@
             <tr>
               <td>{{item.make ? item.make : ''}} {{item.model ? item.model : ''}} </td>
               <td> {{carrito()[$index]['cuantity'] ? carrito()[$index]['cuantity'] : 0}} </td>
-              <td class="flex gap-4">
-                <button class="btn btn-primary font-bold" (click)="cartService.add({'vehicle_vin':item.vin!,'cuantity':1})" > <fa-icon [icon]="plus"/> </button>
-                <button class="btn btn-warning font-bold" (click)="remove(item.vin!)" > <fa-icon [icon]="minus"/> </button>
+              <td class="md:flex gap-4">
+                <button class="btn btn-sm md:btn-md btn-primary font-bold" (click)="cartService.add({'vehicle_vin':item.vin!,'cuantity':1})" > <fa-icon [icon]="plus"/> </button>
+                <button class="btn btn-sm mt-3 md:mt-0 md:btn-md btn-warning font-bold" (click)="remove(item.vin!)" > <fa-icon [icon]="minus"/> </button>
               </td>
             </tr>
           }

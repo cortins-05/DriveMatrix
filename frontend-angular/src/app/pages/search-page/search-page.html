@@ -1,7 +1,7 @@
 <div class="flex flex-col h-full">
   <div class="flex flex-col pt-2 pl-2 shrink-0">
-    <div class="flex gap-10 mb-4">
-      <label class="select">
+    <div class="flex flex-col min-[570px]:flex-row gap-10 mb-4">
+      <label class="select w-full">
         <span class="label"> <fa-icon [icon]="lupa" /> Filter:</span>
         <select (change)="onChange($event)" #filtro>
           <option value="make" selected>Make</option>
@@ -17,19 +17,19 @@
       </label>
 
       @if (textInputValue.includes(filtroValor()[0])){
-        <input type="text" placeholder="Value..." class="input" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
+        <input type="text" placeholder="Value..." class="input w-full" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
       }
       @else if (numberInputValue.includes(filtroValor()[0])) {
-        <input type="number" class="input" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
+        <input type="number" class="input w-full" (keyup)="setearValorInput($event)" (keyup.enter)="buscar()" #valorInput>
       }
       @else{
-        <select class="select" (change)="setearSelect($event)" >
+        <select class="select w-full" (change)="setearSelect($event)" >
           @for (item of filtroValor()[1]; track $index) {
             <option [value]="item">{{item}}</option>
           }
         </select>
       }
-      <button (click)="buscar()" class="btn btn-primary btn-sm">Buscar</button>
+      <button (click)="buscar()" class="btn btn-primary btn-sm md:w-1/5">Buscar</button>
     </div>
   </div>
 

@@ -1,11 +1,11 @@
 @if (vehiculos().length == 0) {
-  <h1 class="text-3xl font-bold text-primary font-montserrat-md no-select">Tu lista de deseos esta vacia, empieza a añadir ahora mismo!!<span class="text-7xl text-secondary" ><fa-icon [icon]="caraTriste" /></span></h1>
+  <h1 class="text-xl md:text-3xl font-bold text-primary font-montserrat-md no-select">Tu lista de deseos esta vacia, empieza a añadir ahora mismo!!<span class="text-4xl md:text-7xl text-secondary" ><fa-icon [icon]="caraTriste" /></span></h1>
 }@else {
   <ul class="list bg-base-300 rounded-box shadow-md">
     @for(item of vehiculos();track $index){
       <li class="list-row bg-base-300 flex flex-col gap-2">
         <!-- Fila principal -->
-        <div class="flex items-center gap-4">
+        <div class="md:flex items-center gap-4">
           <div>
             <img [src]="imageList()[$index]" alt="imagen" class="h-30" />
           </div>

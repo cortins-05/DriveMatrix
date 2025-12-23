@@ -1,16 +1,16 @@
 @if (vehicleData(); as car) {
-  <div class="min-h-full flex flex-col justify-center items-center bg-base-200 py-2">
+  <div class="min-h-full flex flex-col justify-center items-center md:bg-base-200 py-2">
 
-    <div class="card bg-base-100 shadow-2xl max-w-6xl mx-auto overflow-hidden">
+    <div class="card bg-base-100 shadow-2xl w-full md:max-w-6xl mx-auto overflow-hidden">
 
-      <figure class="w-full flex items-center justify-center relative min-h-[400px]">
+      <figure class="w-full flex items-center justify-center relative md:min-h-[400px]">
         @if (vehicleImages() && vehicleImages().length > 0) {
           <swiper-carousel
             [images_path]="vehicleImages()"
             direction="horizontal"
             [speed]="900"
             [pagination]="false"
-            class="h-full object-cover justify-self-center w-2/5"
+            class="md:h-full object-cover justify-self-center w-full md:w-2/5"
           />
         } @else {
           <div class="text-neutral-content flex flex-col items-center opacity-50">
@@ -22,27 +22,27 @@
         }
       </figure>
 
-      <div class="card-body w-full p-8">
+      <div class="card-body w-full p-3 md:p-8">
 
-        <div class="mb-6 border-b border-base-300 pb-4">
-          <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
+        <div class="mb-6 md:flex border-b border-base-300 pb-4">
+          <h2 class="card-title text-sm md:text-4xl font-extrabold text-base-content uppercase tracking-tight">
             {{car.make}} <span class="text-primary">{{car.model}}</span>
-            <span class="ml-auto flex gap-7">
-              <button class="btn btn-lg btn-primary font-bold" (click)="comprarVehiculo()" >Comprar</button>
-              <button class="btn btn-lg btn-secondary font-bold" (click)="addCart()">Añadir al carrito</button>
-              @if (inWishlist()) {
-                <fa-icon [icon]="fullHeart" class="cursor-pointer" (click)="eliminarWishList()" />
-              }@else {
-                <fa-icon [icon]="emptyHeart" class="cursor-pointer" (click)="anadirWishList()" />
-              }
-            </span>
+            @if (inWishlist()) {
+              <fa-icon [icon]="fullHeart" class="cursor-pointer" (click)="eliminarWishList()" />
+            }@else {
+              <fa-icon [icon]="emptyHeart" class="cursor-pointer" (click)="anadirWishList()" />
+            }
           </h2>
+          <span class="ml-auto mt-2 md:mt-0 flex gap-7">
+            <button class="btn btn-sm md:btn-lg btn-primary font-bold" (click)="comprarVehiculo()" >Comprar</button>
+            <button class="btn btn-sm md:btn-lg btn-secondary font-bold" (click)="addCart()">Añadir al carrito</button>
+          </span>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
           @if (car.transmission) {
-            <div class="stats bg-base-200 shadow-sm border border-base-300">
+            <div class="stats bg-base-200 shadow-sm md:border md:border-base-300">
               <div class="stat p-4">
                 <div class="stat-figure text-primary">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -51,31 +51,25 @@
                   </svg>
                 </div>
                 <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Transmisión</div>
-                <div class="stat-value text-xl">{{car.transmission}}</div>
+                <div class="stat-value text-sm md:text-xl">{{car.transmission}}</div>
               </div>
             </div>
           }
 
           @if (car.fuel) {
-            <div class="stats bg-base-200 shadow-sm border border-base-300">
+            <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
               <div class="stat p-4">
-                <div class="stat-figure text-secondary">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
-                  </svg>
-                </div>
-                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Combustible</div>
-                <div class="stat-value text-xl">{{car.fuel}}</div>
+                <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Motor</div>
+                <div class="stat-value text-sm md:text-lg leading-tight">{{car.fuel}}</div>
               </div>
             </div>
           }
 
           @if (car.engine) {
-             <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
+            <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
               <div class="stat p-4">
                 <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Motor</div>
-                <div class="stat-value text-lg leading-tight">{{car.engine}}</div>
+                <div class="stat-value text-sm md:text-lg leading-tight">{{car.engine}}</div>
               </div>
             </div>
           }
@@ -84,7 +78,7 @@
             <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
               <div class="stat p-4">
                 <div class="stat-title text-xs uppercase font-bold tracking-wider opacity-70">Tracción</div>
-                <div class="stat-value text-lg">{{car.drivetrain}}</div>
+                <div class="stat-value text-sm md:text-lg">{{car.drivetrain}}</div>
               </div>
             </div>
           }
@@ -117,7 +111,7 @@
                 <app-valoration [vehicle_vin]="valoration.vehicle_vin" [tipe]="3" [valorationElement]="valoration" />
               }
             }@else {
-              <h1 class="text-2xl text-secondary font-semibold">Todavia no hay valoraciones.</h1>
+              <h1 class="text-xl md:text-2xl text-secondary font-semibold">Todavia no hay valoraciones.</h1>
             }
           </div>
         </details>
@@ -128,12 +122,12 @@
   <div class="divider"></div>
   <details class="collapse bg-base-100 border border-base-300" name="my-accordion-det-1" close>
     <summary class="collapse-title font-semibold">
-      <h2 class="card-title text-4xl font-extrabold text-base-content uppercase tracking-tight">
+      <h2 class="card-title text-xs md:text-4xl font-extrabold text-base-content uppercase tracking-tight">
         Encuentra tu <span class="text-primary">concesionario</span>
       </h2>
     </summary>
     <div class="collapse-content w-[full] h-[700px]">
-      <div class="h-full w-1/2 mx-auto mt-5">
+      <div class="h-full md:w-1/2 mx-auto mt-5">
         <app-map-box class="h-full w-full" [coords]="car.location!"/>
       </div>
     </div>
