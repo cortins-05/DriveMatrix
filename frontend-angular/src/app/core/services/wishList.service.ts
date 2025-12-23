@@ -1,10 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-
-interface WishList{
-  wishlist: [];
-}
+import { WishListObject } from '../interfaces/WishList.interface';
 
 @Injectable({providedIn: 'root'})
 export class WishListService {
@@ -25,7 +22,7 @@ export class WishListService {
   }
 
   obtenerWishList(){
-    return this.http.get<WishList>("http://localhost:5000/api/user/wishlist",{
+    return this.http.get<WishListObject>("http://localhost:5000/api/user/wishlist",{
       headers: this.getHeaders()
     })
   }

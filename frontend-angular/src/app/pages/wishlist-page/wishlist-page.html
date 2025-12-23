@@ -1,7 +1,35 @@
-@if (wishList().length == 0) {
+@if (vehiculos().length == 0) {
   <h1 class="text-3xl font-bold text-primary font-montserrat-md no-select">Tu lista de deseos esta vacia, empieza a añadir ahora mismo!!<span class="text-7xl text-secondary" ><fa-icon [icon]="caraTriste" /></span></h1>
 }@else {
-  @for(item of wishList();track $index){
-    <p>{{item}}</p>
-  }
+  <ul class="list bg-base-300 rounded-box shadow-md">
+    @for(item of vehiculos();track $index){
+      <li class="list-row bg-base-300 flex flex-col gap-2">
+        <!-- Fila principal -->
+        <div class="flex items-center gap-4">
+          <div>
+            <img [src]="imageList()[$index]" alt="imagen" class="h-30" />
+          </div>
+
+          <div class="flex-1">
+            <div class="font-bold font-montserrat-md text-2xl">
+              {{ item.make }} {{ item.model }}
+            </div>
+          </div>
+
+          <div class="flex gap-5 ml-auto">
+            <button class="btn btn-secondary font-bold" (click)="addCart(item.vin!)">Añadir al carrito</button>
+            <button class="btn btn-error font-bold" (click)="borrar(item.vin!)" >Borrar</button>
+          </div>
+        </div>
+      </li>
+    }
+  </ul>
+}
+@if (carrito()) {
+  <div role="alert" class="absolute bottom-5 right-5 alert alert-success">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Añadido al carrito con exito.</span>
+  </div>
 }
