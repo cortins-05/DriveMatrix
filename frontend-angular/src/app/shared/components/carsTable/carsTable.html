@@ -1,7 +1,7 @@
-<main class="w-full h-full grid grid-cols-2 gap-7">
+<main class="w-full h-full grid md:grid-cols-2 gap-7">
   @for (item of paginatedData(); track $index) {
     <div
-      class="card card-side bg-base-300 shadow-sm cursor-pointer"
+      class="card md:card-side bg-base-300 shadow-sm cursor-pointer"
       [routerLink]="authService.isAuthenticated() ? '/vehicle' : null"
       [queryParams]="authService.isAuthenticated() ? { vin: item['vin'] } : null"
       [class.pointer-events-none]="!authService.isAuthenticated()"
@@ -9,7 +9,7 @@
       <figure>
         <img
           [src]="imageList()[$index]"
-          class="h-60"
+          class="w-full md:h-60"
         >
       </figure>
       <div class="card-body">

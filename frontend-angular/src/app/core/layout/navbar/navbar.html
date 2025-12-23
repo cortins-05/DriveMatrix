@@ -6,13 +6,11 @@
       </div>
       <ul
         tabindex="-1"
-        class="menu menu-sm dropdown-content bg-base-200 mt-3 w-40 p-5 shadow font-bold ml-0">
-        <enlace-hover nombre="Catalog" routerLink="/catalog" [queryParams]="{page: catalogPage()}"/>
-        <enlace-hover nombre="Search" routerLink="/search">
-          <fa-icon [icon]="lupa" class="cursor-pointer items-center justify-center flex"/>
-        </enlace-hover>
-        <enlace-hover nombre="About" routerLink="/about"/>
-        <button class="btn btn-xs btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()">
+        class="menu menu-sm dropdown-content bg-base-200 mt-3 gap-3 w-40 p-5 shadow font-bold ml-0">
+        <li class="p-2 bg-base-100 rounded-md" routerLink="/catalog" [queryParams]="{page: catalogPage()}">Catalog</li>
+        <li class="p-2 bg-base-100 rounded-md" routerLink="/search">Search</li>
+        <li class="p-2 bg-base-100 rounded-md" routerLink="/about">About</li>
+        <button class="btn btn-sm btn-ghost bg-base-100 gap-0 w-14 mt-3" (click)="toggleTheme()">
           @if(current_theme()=="luxury"){
             <fa-icon [icon]="faMoon"/>
           }
@@ -50,7 +48,7 @@
   <div class="navbar-end">
     @if (isAutenticated()) {
       <div class="dropdown dropdown-bottom">
-        <label tabindex="0" class="btn btn-primary">
+        <label tabindex="0" class="btn btn-sm md:btn-md btn-primary">
           <fa-icon [icon]="userIcon" />  {{authService.user()?.user?.nombre | titlecase}}
         </label>
 
@@ -68,7 +66,7 @@
       </div>
     }
     @else {
-      <button class="btn" routerLink="/login">Login</button>
+      <button class="btn btn-sm md:btn-md" routerLink="/login">Login</button>
     }
   </div>
 </div>

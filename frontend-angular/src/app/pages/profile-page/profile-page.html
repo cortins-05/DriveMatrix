@@ -1,5 +1,5 @@
-<div class="flex gap-10">
-  <form class="flex flex-col gap-6 w-1/2 p-10 bg-base-300 rounded-2xl" [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()">
+<div class="flex flex-col md:flex-row gap-10">
+  <form class="flex flex-col gap-6 md:w-1/2 p-5 md:p-10 bg-base-300 rounded-2xl" [formGroup]="updateForm" (ngSubmit)="onUpdateSubmit()">
     <h1 class="text-center font-bold text-2xl">Actualizar Perfil</h1>
     <label class="input input-bordered w-full">
       <fa-icon [icon]="userIcon" class="text-2xl"></fa-icon>
@@ -17,9 +17,9 @@
     </label>
     <button type="submit" class="btn btn-md btn-primary mt-auto">Update Profile</button>
   </form>
-  <div class="w-1/2 bg-primary text-base-300 p-10 rounded-2xl">
+  <div class="md:w-1/2 bg-primary text-base-300 p-4 md:p-10 rounded-2xl">
     <h1 class="text-center font-bold text-2xl">Mis Valoraciones</h1>
-    <div class="grid grid-cols-2 gap-5 mt-5 overflow-y-scroll max-h-85">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 overflow-y-scroll max-h-85">
       @for (valoracion of user()?.valorations; track $index) {
         <app-valoration [vehicle_vin]="valoracion.vehicle_vin" [tipe]="2" [valorationElement]="valoracion" />
       }
