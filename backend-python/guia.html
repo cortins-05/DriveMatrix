@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DriveMatrix Backend — Guía de uso para programadores</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>📄</text></svg>" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x;
+      opacity: 0.5;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border-left: 5px solid #667eea;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: #667eea;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #667eea;
+    }
+
+    h3 {
+      color: #764ba2;
+      font-size: 1.3rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    h4 {
+      color: #2c3e50;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p, li {
+      margin-bottom: 0.8rem;
+      color: #34495e;
+    }
+
+    code {
+      background: #f4f6f9;
+      border: 1px solid #e0e6ed;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9rem;
+      color: #d63384;
+    }
+
+    pre {
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-left: 4px solid #667eea;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    ul, ol {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    strong {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .endpoint {
+      background: #f8fafc;
+      border-left: 4px solid #667eea;
+      padding: 1.2rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+
+    .method {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-right: 0.5rem;
+    }
+
+    .method.get {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .method.post {
+      background: #f3e5f5;
+      color: #7b1fa2;
+    }
+
+    .method.patch {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .method.delete {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .status-code {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin: 0.2rem;
+    }
+
+    .status-2xx {
+      background: #c8e6c9;
+      color: #1b5e20;
+    }
+
+    .status-4xx {
+      background: #ffccbc;
+      color: #d84315;
+    }
+
+    .status-5xx {
+      background: #ffcdd2;
+      color: #b71c1c;
+    }
+
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      border-top: 4px solid #667eea;
+    }
+
+    footer p {
+      color: #bdc3c7;
+      margin: 0.5rem 0;
+    }
+
+    .note {
+      background: #fff8e1;
+      border-left: 4px solid #fbc02d;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+
+    .warning {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+
+    .success {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+
+    .toc {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border-left: 5px solid #764ba2;
+    }
+
+    .toc h2 {
+      color: #764ba2;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #764ba2;
+    }
+
+    .toc ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .toc li {
+      margin: 0;
+    }
+
+    .toc a {
+      display: block;
+      padding: 0.8rem 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+
+    .toc a:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      border-left-color: white;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      main {
+        padding: 0 1rem;
+      }
+
+      section {
+        padding: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+
+      .toc {
+        padding: 1.5rem;
+      }
+
+      .toc ul {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚗 DriveMatrix Backend</h1>
+    <p>Guía de uso para programadores — API REST Flask + MongoDB</p>
+  </header>
+
+  <div class="toc">
+    <h2>📑 Índice</h2>
+    <ul>
+      <li><a href="#autenticacion">1. Autenticación</a></li>
+      <li><a href="#usuarios">2. Usuarios</a></li>
+      <li><a href="#wishlist">3. Wishlist</a></li>
+      <li><a href="#compras">4. Compras</a></li>
+      <li><a href="#valoraciones">5. Valoraciones</a></li>
+      <li><a href="#vehiculos">6. Vehículos</a></li>
+      <li><a href="#autodev">7. Auto.dev Integration</a></li>
+      <li><a href="#codigos-estado">8. Códigos de Estado</a></li>
+      <li><a href="#notas">9. Notas Importantes</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <section id="autenticacion">
+      <h2>1. Autenticación</h2>
+      
+      <h3>Login</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/user/login</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json</code></pre>
+      
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{
+  "email": "usuario@ejemplo.com",
+  "password": "micontraseña"
+}</code></pre>
+
+      <p><strong>Respuestas exitosas (200 OK)</strong></p>
+      <pre><code>{
+  "token": "&lt;jwt_token&gt;",
+  "user_id": "&lt;id_usuario&gt;",
+  "email": "usuario@ejemplo.com"
+}</code></pre>
+
+      <p><strong>Validaciones</strong></p>
+      <ul>
+        <li>Email debe ser válido y existente</li>
+        <li>Contraseña se compara con hash bcrypt</li>
+        <li>Token JWT expira en ~2 horas</li>
+      </ul>
+
+      <p><strong>Códigos de error</strong></p>
+      <span class="status-code status-4xx">400 Bad Request</span> — Email o contraseña faltantes
+      <br />
+      <span class="status-code status-4xx">401 Unauthorized</span> — Credenciales inválidas
+      <br />
+      <span class="status-code status-4xx">415 Unsupported Media Type</span> — Content-Type no es application/json
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Verificar token (Check Auth)</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/user/check</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Respuesta (200 OK)</strong></p>
+      <pre><code>{
+  "user_id": "&lt;id_usuario&gt;",
+  "email": "usuario@ejemplo.com"
+}</code></pre>
+
+      <p><strong>Códigos de error</strong></p>
+      <span class="status-code status-4xx">401 Unauthorized</span> — Token faltante o inválido
+    </section>
+
+    <section id="usuarios">
+      <h2>2. Usuarios</h2>
+
+      <h3>Crear usuario</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/user/create</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json</code></pre>
+
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{
+  "nombre": "Juan Pérez",
+  "email": "juan@ejemplo.com",
+  "password": "micontraseña"
+}</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">201 Created</span> — Usuario creado exitosamente
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — Datos inválidos
+      <br />
+      <span class="status-code status-4xx">409 Conflict</span> — Email ya existe
+      <br />
+      <span class="status-code status-4xx">415 Unsupported Media Type</span> — Content-Type incorrecto
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Obtener perfil</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/user/&lt;user_id&gt;</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Usuario encontrado
+      <br />
+      <span class="status-code status-4xx">401 Unauthorized</span> — Token inválido
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — Usuario no existe
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Actualizar usuario</h3>
+      <div class="endpoint">
+        <span class="method patch">PATCH</span>
+        <code>/api/user/update/&lt;user_id&gt;</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (opcional, al menos un campo)</strong></p>
+      <pre><code>{
+  "nombre": "Nuevo Nombre",
+  "password": "nuevacontraseña",
+  "wishlist_items": [
+    { "vehicle_vin": "VIN123" }
+  ]
+}</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Usuario actualizado
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — Datos inválidos
+      <br />
+      <span class="status-code status-4xx">401 Unauthorized</span> — Token inválido
+      <br />
+      <span class="status-code status-4xx">403 Forbidden</span> — No autorizado para este usuario
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Eliminar usuario</h3>
+      <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <code>/api/user/delete</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Usuario eliminado
+      <br />
+      <span class="status-code status-4xx">401 Unauthorized</span> — Token inválido
+      <br />
+      <span class="status-code status-5xx">500 Internal Server Error</span> — Error al eliminar
+    </section>
+
+    <section id="wishlist">
+      <h2>3. Wishlist</h2>
+
+      <h3>Añadir a wishlist</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/user/wishlist/add</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{ "vehicle_vin": "VIN123" }</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Vehículo agregado
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — VIN faltante o duplicado
+      <br />
+      <span class="status-code status-4xx">415 Unsupported Media Type</span> — Content-Type incorrecto
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Eliminar de wishlist</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/user/wishlist/remove</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{ "vehicle_vin": "VIN123" }</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Vehículo eliminado
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — Vehículo no en wishlist
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Obtener wishlist</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/user/wishlist</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Respuesta (200 OK)</strong></p>
+      <pre><code>{
+  "wishlist": [
+    { "vehicle_vin": "VIN123", "added_at": "2025-12-24T10:00:00Z" }
+  ]
+}</code></pre>
+    </section>
+
+    <section id="compras">
+      <h2>4. Compras</h2>
+
+      <h3>Crear compra</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/purchase/create</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{ "vehicle_vin": "VIN123" }</code></pre>
+
+      <p><strong>Flujo</strong></p>
+      <ul>
+        <li>Se busca el vehículo con ese VIN</li>
+        <li>Si existe, se crea documento en colección <code>purchases</code></li>
+        <li>Se almacena: user_id, vehicle_vin, fecha de compra</li>
+      </ul>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">201 Created</span> — Compra creada
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — Vehículo no encontrado
+      <br />
+      <span class="status-code status-4xx">415 Unsupported Media Type</span> — Content-Type incorrecto
+    </section>
+
+    <section id="valoraciones">
+      <h2>5. Valoraciones</h2>
+
+      <h3>Crear valoración</h3>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/valoration/create</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (requerido)</strong></p>
+      <pre><code>{
+  "vehicle_vin": "VIN123",
+  "rating": 4,
+  "comment": "Excelente vehículo (opcional)"
+}</code></pre>
+
+      <p><strong>Validaciones</strong></p>
+      <ul>
+        <li><code>rating</code> debe ser entero entre 1 y 5</li>
+        <li>Un usuario no puede valorar el mismo VIN dos veces (índice único)</li>
+      </ul>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">201 Created</span> — Valoración creada
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — Rating inválido
+      <br />
+      <span class="status-code status-4xx">409 Conflict</span> — Ya valorado por este usuario
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — Vehículo no encontrado
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Obtener valoraciones por VIN (público)</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/valorations/&lt;vehicle_vin&gt;?page=1&amp;per_page=10</code>
+      </div>
+      <p><strong>Query params</strong></p>
+      <ul>
+        <li><code>page</code> (opcional, default 1)</li>
+        <li><code>per_page</code> (opcional, default 10)</li>
+      </ul>
+
+      <p><strong>Respuesta (200 OK)</strong></p>
+      <pre><code>{
+  "vehicle_vin": "VIN123",
+  "page": 1,
+  "per_page": 10,
+  "total": 25,
+  "average_rating": 4.2,
+  "valorations": [
+    {
+      "user_id": "...",
+      "rating": 5,
+      "comment": "...",
+      "created_at": "2025-12-24T10:00:00Z"
+    }
+  ]
+}</code></pre>
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Actualizar valoración</h3>
+      <div class="endpoint">
+        <span class="method patch">PATCH</span>
+        <code>/api/valoration/update/&lt;valoration_id&gt;</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Content-Type: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Body (al menos un campo)</strong></p>
+      <ul>
+        <li><code>rating</code> (integer 1-5)</li>
+        <li><code>comment</code> (string)</li>
+      </ul>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Actualizada
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — Rating inválido
+      <br />
+      <span class="status-code status-4xx">403 Forbidden</span> — No eres el propietario
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — No existe
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Eliminar valoración</h3>
+      <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <code>/api/valoration/delete/&lt;valoration_id&gt;</code>
+      </div>
+      <p><strong>Headers</strong></p>
+      <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Eliminada
+      <br />
+      <span class="status-code status-4xx">403 Forbidden</span> — No eres el propietario
+      <br />
+      <span class="status-code status-4xx">404 Not Found</span> — No existe
+    </section>
+
+    <section id="vehiculos">
+      <h2>6. Vehículos</h2>
+
+      <h3>Listar todos (paginado)</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/auto/listings?page=1&amp;per_page=100</code>
+      </div>
+      <p><strong>Query params</strong></p>
+      <ul>
+        <li><code>page</code> (opcional, default 1)</li>
+        <li><code>per_page</code> (opcional, default 100)</li>
+      </ul>
+
+      <p><strong>Respuesta (200 OK)</strong></p>
+      <pre><code>{
+  "page": 1,
+  "per_page": 100,
+  "data": [ /* documentos */ ]
+}</code></pre>
+
+      <p><strong>Errores</strong></p>
+      <span class="status-code status-4xx">400 Bad Request</span> — Paginación inválida
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Filtrar vehículos</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/auto/listings/filter?doors=4&amp;fuel=gas&amp;make=Toyota</code>
+      </div>
+      <p><strong>Query params permitidos</strong></p>
+      <ul>
+        <li><code>doors</code> (int)</li>
+        <li><code>drivetrain</code> (string)</li>
+        <li><code>engine</code> (string)</li>
+        <li><code>fuel</code> (string)</li>
+        <li><code>make</code> (string)</li>
+        <li><code>model</code> (string)</li>
+        <li><code>seats</code> (int)</li>
+        <li><code>transmission</code> (string)</li>
+      </ul>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Lista filtrada
+      <br />
+      <span class="status-code status-4xx">400 Bad Request</span> — Parámetros numéricos inválidos
+    </section>
+
+    <section id="autodev">
+      <h2>7. Auto.dev Integration</h2>
+
+      <h3>Actualizar catálogo desde Auto.dev</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/auto/actualizarMongo</code>
+      </div>
+      <p><strong>Proceso</strong></p>
+      <ul>
+        <li>Llama a <code>https://api.auto.dev/listings?limit=9999</code></li>
+        <li>Mapea respuesta con <code>interfaces.mapearListing</code></li>
+        <li>Borra colección <code>vehicles</code> e inserta nuevos datos</li>
+      </ul>
+
+      <p><strong>Respuestas</strong></p>
+      <span class="status-code status-2xx">200 OK</span> — Actualización completada
+      <br />
+      <span class="status-code status-5xx">502 Bad Gateway</span> — Error con Auto.dev
+      <br />
+      <span class="status-code status-5xx">500 Internal Server Error</span> — Error en BD
+      <br />
+
+      <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ecf0f1;" />
+
+      <h3>Obtener imágenes por VIN (público)</h3>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/auto/image/&lt;vin&gt;</code>
+      </div>
+      <p><strong>Respuesta (200 OK)</strong></p>
+      <pre><code>[
+  { "url": "https://...", "type": "front" },
+  { "url": "https://...", "type": "side" }
+]</code></pre>
+
+      <p><strong>Errores</strong></p>
+      <span class="status-code status-5xx">502 Bad Gateway</span> — Error comunicando con Auto.dev
+    </section>
+
+    <section id="codigos-estado">
+      <h2>8. Códigos de Estado Comunes</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Significado</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-code status-2xx">200 OK</span></td>
+            <td>Éxito</td>
+            <td>La solicitud se procesó correctamente</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-2xx">201 Created</span></td>
+            <td>Creado</td>
+            <td>Recurso creado exitosamente</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">400 Bad Request</span></td>
+            <td>Solicitud inválida</td>
+            <td>Datos o parámetros incorrectos</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">401 Unauthorized</span></td>
+            <td>No autorizado</td>
+            <td>Token faltante o inválido</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">403 Forbidden</span></td>
+            <td>Prohibido</td>
+            <td>No tienes permiso para este recurso</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">404 Not Found</span></td>
+            <td>No encontrado</td>
+            <td>El recurso no existe</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">409 Conflict</span></td>
+            <td>Conflicto</td>
+            <td>Recurso duplicado o conflicto de datos</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-4xx">415 Unsupported Media Type</span></td>
+            <td>Tipo de contenido no soportado</td>
+            <td>Content-Type debe ser application/json</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-5xx">500 Internal Server Error</span></td>
+            <td>Error del servidor</td>
+            <td>Error interno en el servidor</td>
+          </tr>
+          <tr>
+            <td><span class="status-code status-5xx">502 Bad Gateway</span></td>
+            <td>Gateway erróneo</td>
+            <td>Error en API externa</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="notas">
+      <h2>9. Notas Importantes</h2>
+
+      <div class="note">
+        <strong>📌 Formato de Error</strong>
+        <p>Todos los errores devuelven:</p>
+        <pre><code>{ "error": "descripción del error" }</code></pre>
+      </div>
+
+      <div class="success">
+        <strong>✅ Autenticación</strong>
+        <ul>
+          <li>Todas las rutas protegidas requieren header: <code>Authorization: Bearer &lt;token&gt;</code></li>
+          <li>El decorador <code>token_required</code> decodifica JWT automáticamente</li>
+          <li>Token expira en aproximadamente 2 horas</li>
+        </ul>
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Requisitos</strong>
+        <ul>
+          <li>Content-Type: application/json es OBLIGATORIO para POST, PATCH, DELETE</li>
+          <li>Todos los parámetros numéricos deben ser válidos (enteros/floats)</li>
+          <li>Validar y sanitizar inputs para evitar inyecciones</li>
+          <li>Email debe cumplir formato estándar</li>
+          <li>Contraseña se hashea automáticamente con bcrypt</li>
+        </ul>
+      </div>
+
+      <h3>Recomendaciones de implementación</h3>
+      <ul>
+        <li>Usar funciones <code>serialize()</code> para convertir ObjectId y datetime antes de responder JSON</li>
+        <li>Mantener índices en campos frecuentes (email único, VIN único, etc.)</li>
+        <li>Considerar almacenar un documento por vehículo si el catálogo crece significativamente</li>
+        <li>Nunca exponer SECRET_KEY, API_KEY en el repositorio — usar variables de entorno</li>
+        <li>Implementar rate limiting en endpoints públicos</li>
+        <li>Usar HTTPS en producción</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>DriveMatrix Backend API</strong></p>
+    <p>Documentación actualizada — Diciembre 2025</p>
+    <p>Stack: Flask + MongoDB + JWT Authentication</p>
+    <p style="margin-top: 1rem; font-size: 0.9rem;">Mantén esta guía actualizada cuando hagas cambios en los endpoints</p>
+  </footer>
+</body>
+</html>

@@ -164,7 +164,7 @@ def check_api():
 @app.route("/api")
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    return send_from_directory(base_dir, "Guía Rápida para Developers – Backend Flask.html")
+    return send_from_directory(base_dir, "guia.html")
 
 # ----------------------------
 # CRUD USUARIOS

@@ -1,2 +1,0 @@
-Para que se guarden las actualizaciones en docker ejecutar:
-docker compose up --build --no-deps backend
