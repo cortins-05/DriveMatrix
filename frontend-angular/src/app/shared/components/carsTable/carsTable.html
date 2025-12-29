@@ -25,10 +25,17 @@
         <h2 class="card-title">{{item['make']}} {{item['model']}}</h2>
         <h2 class="font-bold text-xl">{{item.price}}€</h2>
         <p class="font-bold">{{item['transmission']}}, {{item['fuel']}}, {{item['engine']}}, {{item['drivetrain']}}.</p>
-        <p class="font-bold text-primary flex justify-between">
-          <span>Doors: {{item['doors']}}, Seats: {{item['seats']}}</span>
-          <span class="text-base-content">{{valorations()[$index].puntuacion}}/5 de ({{valorations()[$index].users}})</span>
-        </p>
+        <p class="font-bold">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>
+        <div class="flex items-end gap-3.5 self-end mb-2">
+          <div class="rating">
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="1 star" [aria-current]="valorations()[$index].puntuacion == 1" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="2 star" [aria-current]="valorations()[$index].puntuacion == 2" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="3 star" [aria-current]="valorations()[$index].puntuacion == 3" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="4 star" [aria-current]="valorations()[$index].puntuacion == 4" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="5 star" [aria-current]="valorations()[$index].puntuacion == 5" />
+          </div>
+          <p class="font-bold">({{valorations()[$index].users}})</p>
+        </div>
         <p class="font-bold font-montserrat-md text-secondary bg-secondary-content rounded-2xl flex justify-center items-center text-center">{{item['direction']}}</p>
         <div class="card-actions justify-end">
         </div>
