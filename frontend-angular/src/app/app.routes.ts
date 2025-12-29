@@ -3,6 +3,7 @@ import { MainPage } from './pages/main-page/main-page';
 import { AboutPage } from './pages/about-page/about-page';
 import { AuthPage } from './auth/auth-page/auth-page';
 import { NotAuthenticatedGuard } from './auth/guards/not-autenticated.guard';
+import { PaymentPage } from './pages/payment-page/payment-page';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,10 @@ export const routes: Routes = [
     canMatch:[
       NotAuthenticatedGuard
     ]
+  },
+  {
+    path:'payment',
+    component:PaymentPage
   },
   {
     path:'wishlist',
