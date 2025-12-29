@@ -6,27 +6,29 @@
       [queryParams]="authService.isAuthenticated() ? { vin: item['vin'] } : null"
       [class.pointer-events-none]="!authService.isAuthenticated()"
     >
-      <figure>
+      <figure class="relative">
         <img
           [src]="imageList()[$index]"
           class="w-full md:h-60"
         >
+        @if(authService.isAuthenticated()){
+          <button class="rounded-full absolute h-8 w-8 top-3 right-3 bg-black text-white">
+            @if (inWishlist()[$index]) {
+              <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
+            }@else {
+              <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
+            }
+          </button>
+        }
       </figure>
       <div class="card-body">
-        <h2 class="card-title">{{item['make']}} {{item['model']}}
-          @if(authService.isAuthenticated()){
-            <button class="flex gap-5 ml-auto">
-              <div>{{item.price}}€</div>
-              @if (inWishlist()[$index]) {
-                <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
-              }@else {
-                <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
-              }
-            </button>
-          }
-        </h2>
+        <h2 class="card-title">{{item['make']}} {{item['model']}}</h2>
+        <h2 class="font-bold text-xl">{{item.price}}€</h2>
         <p class="font-bold">{{item['transmission']}}, {{item['fuel']}}, {{item['engine']}}, {{item['drivetrain']}}.</p>
-        <p class="font-bold text-primary">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>
+        <p class="font-bold text-primary flex justify-between">
+          <span>Doors: {{item['doors']}}, Seats: {{item['seats']}}</span>
+          <span class="text-base-content">{{valorations()[$index].puntuacion}}/5 de ({{valorations()[$index].users}})</span>
+        </p>
         <p class="font-bold font-montserrat-md text-secondary bg-secondary-content rounded-2xl flex justify-center items-center text-center">{{item['direction']}}</p>
         <div class="card-actions justify-end">
         </div>

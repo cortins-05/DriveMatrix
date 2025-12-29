@@ -15,6 +15,7 @@ import { WishListService } from '../../core/services/wishList.service';
 import { ValorationService } from '../../core/services/valoration.service';
 import { Valoration } from '../../shared/components/valoration/valoration';
 import { ValorationElement } from '../../auth/interfaces/valoration.interface';
+import { FormGroup } from '@angular/forms';
 
 const compraURL = "http://localhost:5000/api/purchase/create";
 
