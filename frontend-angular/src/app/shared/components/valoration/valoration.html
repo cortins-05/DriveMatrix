@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submit(vehicle_vin())">
+<form [formGroup]="form" (ngSubmit)="submit(vehicle_vin())" [hidden]="ocultar()">
   @if (tipe()==1) {
     <details class="collapse rounded-none">
       <summary class="collapse-title font-bold text-primary text-xl">

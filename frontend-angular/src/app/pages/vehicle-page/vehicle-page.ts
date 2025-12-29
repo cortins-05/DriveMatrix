@@ -85,7 +85,8 @@ export class VehiclePage implements OnInit {
           ...(isUsable(item.engine) && { engine: item.engine }),
           ...(isUsable(item.drivetrain) && { drivetrain: item.drivetrain }),
           ...(isUsable(item.doors) && { doors: item.doors }),
-          ...(isUsable(item.seats) && { seats: item.seats })
+          ...(isUsable(item.seats) && { seats: item.seats }),
+          ...{price:item.price}
         }
 
         const autoLimpio: Partial<AutoListing> = {

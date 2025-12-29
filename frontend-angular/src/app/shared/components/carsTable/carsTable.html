@@ -15,7 +15,8 @@
       <div class="card-body">
         <h2 class="card-title">{{item['make']}} {{item['model']}}
           @if(authService.isAuthenticated()){
-            <button class="ml-auto">
+            <button class="flex gap-5 ml-auto">
+              <div>{{item.price}}€</div>
               @if (inWishlist()[$index]) {
                 <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
               }@else {

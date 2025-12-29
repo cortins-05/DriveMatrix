@@ -10,4 +10,5 @@ export interface AutoListing {
   seats: string | number;
   location?: number[];
   direction?: string
+  price:number
 }

@@ -1,5 +1,6 @@
 from typing import TypedDict, List, Optional
 from datetime import date
+import random
 
 """ MAPEAR """
 
@@ -31,4 +32,5 @@ def mapearVehiculo(json):
         "model":        vehicle.get("model"),
         "seats":        to_int(vehicle.get("seats")),
         "transmission": vehicle.get("transmission"),
+        "price": round(random.uniform(10000, 65000), 2),
     }

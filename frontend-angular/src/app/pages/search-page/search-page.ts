@@ -117,7 +117,8 @@ export class SearchPage {
             drivetrain: item.drivetrain ?? 'Sin datos',
             doors: item.doors ?? '0',
             seats: item.seats ?? '0',
-            direction: direccion
+            direction: direccion,
+            price: item.price
           };
           return autoLimpio;
         });

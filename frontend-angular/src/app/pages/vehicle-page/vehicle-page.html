@@ -41,6 +41,13 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
+          <div class="stats bg-base-200 shadow-sm border border-base-300 col-span-2 sm:col-span-1">
+            <div class="stat p-4">
+              <div class="stat-title text-sm md:text-xl uppercase font-bold tracking-wider opacity-70">Price</div>
+              <div class="stat-value text-xs md:text-lg leading-tight">{{car.price}}€</div>
+            </div>
+          </div>
+
           @if (car.transmission) {
             <div class="stats bg-base-200 shadow-sm md:border md:border-base-300">
               <div class="stat p-4">

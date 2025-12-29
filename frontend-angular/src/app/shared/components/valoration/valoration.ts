@@ -34,6 +34,8 @@ export class Valoration {
 
   user = signal<User|null>(null);
 
+  ocultar = signal<boolean>(false);
+
   constructor() {
     this.form = this.fb.group({
       rating: [null],
@@ -103,6 +105,7 @@ export class Valoration {
         next: () => {
           this.valoracion.set(true);
           setTimeout(() => this.valoracion.set(null), 2000);
+          this.ocultar.set(true);
         },
         error: () => {
           this.valoracion.set(false);
