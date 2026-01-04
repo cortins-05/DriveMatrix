@@ -6,26 +6,36 @@
       [queryParams]="authService.isAuthenticated() ? { vin: item['vin'] } : null"
       [class.pointer-events-none]="!authService.isAuthenticated()"
     >
-      <figure>
+      <figure class="relative">
         <img
           [src]="imageList()[$index]"
           class="w-full md:h-60"
         >
+        @if(authService.isAuthenticated()){
+          <button class="rounded-full absolute h-8 w-8 top-3 right-3 bg-black text-white">
+            @if (inWishlist()[$index]) {
+              <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
+            }@else {
+              <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
+            }
+          </button>
+        }
       </figure>
       <div class="card-body">
-        <h2 class="card-title">{{item['make']}} {{item['model']}}
-          @if(authService.isAuthenticated()){
-            <button class="ml-auto">
-              @if (inWishlist()[$index]) {
-                <fa-icon [icon]="fullHeart" class="cursor-pointer"/>
-              }@else {
-                <fa-icon [icon]="emptyHeart" class="cursor-pointer"/>
-              }
-            </button>
-          }
-        </h2>
+        <h2 class="card-title">{{item['make']}} {{item['model']}}</h2>
+        <h2 class="font-bold text-xl">{{item.price}}€</h2>
         <p class="font-bold">{{item['transmission']}}, {{item['fuel']}}, {{item['engine']}}, {{item['drivetrain']}}.</p>
-        <p class="font-bold text-primary">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>
+        <p class="font-bold">Doors: {{item['doors']}}, Seats: {{item['seats']}}</p>
+        <div class="flex items-end gap-3.5 self-end mb-2">
+          <div class="rating">
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="1 star" [aria-current]="valorations()[$index].puntuacion == 1" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="2 star" [aria-current]="valorations()[$index].puntuacion == 2" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="3 star" [aria-current]="valorations()[$index].puntuacion == 3" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="4 star" [aria-current]="valorations()[$index].puntuacion == 4" />
+            <input type="radio" name="rating-1" class="mask mask-star" aria-label="5 star" [aria-current]="valorations()[$index].puntuacion == 5" />
+          </div>
+          <p class="font-bold">({{valorations()[$index].users}})</p>
+        </div>
         <p class="font-bold font-montserrat-md text-secondary bg-secondary-content rounded-2xl flex justify-center items-center text-center">{{item['direction']}}</p>
         <div class="card-actions justify-end">
         </div>

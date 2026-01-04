@@ -1,0 +1,72 @@
+<section class="mt-5 px-6">
+  <div class="border-primary border-4 max-w-4xl mx-auto bg-base-100 shadow-xl rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+
+    <!-- Checkout Form -->
+    <div class="p-8">
+      <h2 class="text-2xl font-bold text-primary mb-4">Payment Details</h2>
+      <form class="space-y-5">
+        <div>
+          <label class="block mb-1 text-sm">Name on Card</label>
+          <input type="text" value="John Doe" class="input input-bordered w-full focus:ring-primary" />
+        </div>
+        <div>
+          <label class="block mb-1 text-sm">Card Number</label>
+          <input type="text" value="1234 5678 9012 3456" class="input input-bordered w-full focus:ring-primary" />
+        </div>
+        <div class="flex gap-4">
+          <div class="w-1/2">
+            <label class="block mb-1 text-sm">Expiry</label>
+            <input type="text" value="MM/YY" class="input input-bordered w-full focus:ring-primary" />
+          </div>
+          <div class="w-1/2">
+            <label class="block mb-1 text-sm">CVC</label>
+            <input type="text" value="123" class="input input-bordered w-full focus:ring-primary" />
+          </div>
+        </div>
+        <button (click)="comprar()" class="btn btn-primary w-full mt-4 text-lg">Pay</button>
+      </form>
+    </div>
+
+    <!-- Payment Methods & Summary -->
+    <div class="bg-base-300 p-8 border-l border-base-200">
+      <h3 class="text-xl font-semibold text-primary mb-6">Choose Payment Method</h3>
+
+      <div class="space-y-4">
+        <!-- Credit Card -->
+        <div class="flex items-center p-4 bg-base-100 rounded-lg shadow-sm border hover:shadow-md transition cursor-pointer hover:bg-primary hover:text-base-100">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Visa.svg/512px-Visa.svg.png" class="h-6 mr-4" alt="Visa" />
+          <p class="font-medium">Credit / Debit Card</p>
+        </div>
+
+        <!-- PayPal -->
+        <div class="flex items-center p-4 bg-base-100 rounded-lg shadow-sm border hover:shadow-md transition cursor-pointer hover:bg-primary hover:text-base-100">
+          <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" class="h-6 mr-4" alt="PayPal" />
+          <p class="font-medium">PayPal</p>
+        </div>
+
+        <!-- Apple Pay -->
+        <div class="flex items-center p-4 bg-base-100 rounded-lg shadow-sm border hover:shadow-md transition cursor-pointer hover:bg-primary hover:text-base-100">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" class="h-6 mr-4" alt="Apple" />
+          <p class="font-medium">Apple Pay</p>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="mt-10 border-t border-base-200 pt-6">
+        <h4 class="text-primary font-semibold mb-2">Order Summary</h4>
+        <div class="flex justify-between">
+          <span>Subscription Plan</span>
+          <span>{{price()}}€</span>
+        </div>
+        <div class="flex justify-between mt-1">
+          <span>Tax</span>
+          <span>0.00€</span>
+        </div>
+        <div class="flex justify-between text-lg font-bold text-primary mt-4">
+          <span>Total</span>
+          <span>{{price()}}€</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

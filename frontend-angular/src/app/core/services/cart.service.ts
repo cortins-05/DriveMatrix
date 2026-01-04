@@ -23,6 +23,8 @@ export class CartService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.cart()));
   }
 
+  vehiclesRapidPurchase = signal<AutoListing[]>([]);
+
   add(item:CartItem){
     const cart = this.cart();
     const found = cart.find(i => i.vehicle_vin === item.vehicle_vin);

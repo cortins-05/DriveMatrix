@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, of } from 'rxjs';
 import { AutoListing } from '../../core/interfaces/Autolisting.interface';
 import { PixabayService } from '../../core/services/pixabay.service';
@@ -16,8 +16,6 @@ import { ValorationService } from '../../core/services/valoration.service';
 import { Valoration } from '../../shared/components/valoration/valoration';
 import { ValorationElement } from '../../auth/interfaces/valoration.interface';
 
-const compraURL = "http://localhost:5000/api/purchase/create";
-
 @Component({
   selector: 'app-vehicle-page',
   imports: [SwiperCarousel,MapBox,FontAwesomeModule,Valoration],
@@ -32,9 +30,10 @@ export class VehiclePage implements OnInit {
   cartService = inject(CartService);
   wishListService = inject(WishListService);
   valorationService = inject(ValorationService);
+  router = inject(Router);
 
   vehicleVin = signal<string>("");
-  vehicleData:WritableSignal<Partial<AutoListing>|null> = signal(null) ;
+  vehicleData: WritableSignal<AutoListing | null> = signal(null);
   vehicleImages = signal<any>(null);
 
   venta = signal<boolean|null>(null);
@@ -79,19 +78,19 @@ export class VehiclePage implements OnInit {
           location: item.location
         }
 
-        const optionalProps = {
-          ...(isUsable(item.transmission) && { transmission: item.transmission }),
-          ...(isUsable(item.fuel) && { fuel: item.fuel }),
-          ...(isUsable(item.engine) && { engine: item.engine }),
-          ...(isUsable(item.drivetrain) && { drivetrain: item.drivetrain }),
-          ...(isUsable(item.doors) && { doors: item.doors }),
-          ...(isUsable(item.seats) && { seats: item.seats })
-        }
-
-        const autoLimpio: Partial<AutoListing> = {
-          ...autoBase,
-          ...optionalProps
-        } as Partial<AutoListing>;
+        const autoLimpio: AutoListing = {
+          vin: item.vin,
+          make: item.make,
+          model: item.model,
+          location: item.location,
+          transmission: item.transmission,
+          fuel: item.fuel,
+          engine: item.engine,
+          drivetrain: item.drivetrain,
+          doors: item.doors,
+          seats: item.seats,
+          price: item.price
+        };
 
         return autoLimpio;
       })
@@ -109,37 +108,13 @@ export class VehiclePage implements OnInit {
     });
   }
 
-  comprarVehiculo(){
-    if(this.vehicleVin()=='') return;
-    const token = localStorage.getItem('token');
+  comprarVehiculo() {
+    const data = this.vehicleData();
 
-    if (!token) {
-      this.authService.logout();
-      this.authService.isAuthenticated.set(false);
-      return;
-    }
+    if (!data) return;
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': token
-      })
-    }
-
-    this.http.post(compraURL,{"vehicle_vin":this.vehicleVin()},httpOptions)
-    .subscribe({
-      next: exito=>{
-        this.venta.set(true);
-      },
-      error: err=>{
-        this.venta.set(false);
-      }
-    })
-
-    setTimeout(()=>{
-      this.venta.set(null);
-    },2000);
-
+    this.cartService.vehiclesRapidPurchase.set([data]);
+    this.router.navigateByUrl("/payment");
   }
 
   async checkeoWishList() {

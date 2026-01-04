@@ -787,7 +787,11 @@ def filter_listings():
 #GUARDAR TODOS LOS VEHICULOS EN MONGO
 @app.route("/auto/actualizarMongo")
 def listings_vehicles():
+    
     url = "https://api.auto.dev/listings?limit=9999"
+
+    if(AUTODEV_API_KEY==""):
+        print("No hay clave api")
 
     headers = {
         'Authorization': f'Bearer {AUTODEV_API_KEY}',
