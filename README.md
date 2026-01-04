@@ -4,6 +4,22 @@
 
 DriveMatrix es una plataforma integral de comercio electrónico especializada en la venta de vehículos. Implementa un frontend moderno en Angular con un backend robusto en Flask y persistencia de datos en MongoDB. La aplicación proporciona funcionalidades completas de e-commerce incluyendo catálogo de vehículos, gestión de carrito, lista de deseos, historial de compras y sistema de valoraciones.
 
+## Tabla de Contenidos
+
+- [Descripción General del Proyecto](#descripción-general-del-proyecto)
+- [Características](#características)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Instalación y Ejecución](#instalación-y-ejecución)
+
+## Características
+
+DriveMatrix ofrece las siguientes características:
+
+- **Frontend Moderno:** Desarrollado en Angular, proporcionando una experiencia de usuario fluida y atractiva.
+- **Backend Robusto:** Implementado en Flask, asegurando un manejo eficiente de las solicitudes y la lógica del negocio.
+- **Persistencia de Datos:** Utiliza MongoDB para almacenar información de manera segura y escalable.
+- **Funcionalidades de E-commerce:** Incluye catálogo de vehículos, gestión de carrito, lista de deseos, historial de compras y sistema de valoraciones.
+
 # IMAGENES:
 
 ## CAMBIO DE COLOR:
@@ -354,11 +370,31 @@ npm install
 
 Ver carpetas y archivos principales:
 
-- Backend: [backend-python/main.py](backend-python/main.py), [backend-python/interfaces.py](backend-python/interfaces.py), [backend-python/requirements.txt](backend-python/requirements.txt), [backend-python/dockerfile](backend-python/dockerfile).
-- Frontend: configuración en [frontend-angular/angular.json](frontend-angular/angular.json), scripts en [frontend-angular/package.json](frontend-angular/package.json) y bootstrap en [frontend-angular/src/main.ts](frontend-angular/src/main.ts).
-- Docker: [docker/docker-compose.yml](docker/docker-compose.yml).
-
----
+```
+DriveMatrix/
+├── backend-python/
+│   ├── dockerfile
+│   ├── documentacion.b64.txt
+│   ├── generate_environment.py
+│   ├── guia.html
+│   ├── interfaces.py
+│   ├── main.py
+│   ├── requirements.txt
+│   └── __pycache__/
+├── docker/
+│   └── docker-compose.yml
+├── frontend-angular/
+│   ├── angular.json
+│   ├── package.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.spec.json
+│   └── public/
+│       ├── assets/
+│       ├── fonts/
+│       └── src/
+└── photos/
+```
 
 ## API (resumen práctico)
 
@@ -415,21 +451,8 @@ curl -X POST http://localhost:5000/api/user/login \
 
 ---
 
+
 ## Comandos útiles
-
-Frontend:
-
-```bash
-npm start
-npm run build
-npm test
-```
-
-Backend:
-
-```bash
-python backend-python/main.py
-```
 
 Docker:
 
@@ -438,4 +461,12 @@ cd docker
 docker-compose up -d
 docker-compose down
 docker-compose logs -f backend
+```
+
+Frontend:
+
+```bash
+npm start
+npm run build
+npm test
 ```
