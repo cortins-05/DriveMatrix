@@ -4,16 +4,19 @@
 
 DriveMatrix es una plataforma integral de comercio electrónico especializada en la venta de vehículos. Implementa un frontend moderno en Angular con un backend robusto en Flask y persistencia de datos en MongoDB. La aplicación proporciona funcionalidades completas de e-commerce incluyendo catálogo de vehículos, gestión de carrito, lista de deseos, historial de compras y sistema de valoraciones.
 
+# IMAGENES:
+
+## CAMBIO DE COLOR:
 ![COLOR1](/photos/image.png)
 ![COLOR2](/photos/image2.png)
 
+## CARACTERISTICAS DE LOS VEHICULOS:
 ![LIST](/photos/image3.png)
 ![PER_VEHICLE](/photos/image4.png)
 ![SEARCH_VEHICLE](/photos/image6.png)
 
+## ABOUT PAGE:
 ![About](/photos/image5.png)
-
-
 
 ### Características Principales
 
